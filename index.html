@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salman Pro Finance - Ultimate Edition</title>
+    <title>Salman Pro Finance - Final Integrated</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
@@ -21,7 +21,7 @@
 
     <div id="auth-section" class="flex items-center justify-center min-h-screen p-4">
         <div class="card p-8 w-full max-w-md border-t-8 border-blue-600">
-            <h1 class="text-3xl font-black text-center text-blue-600 italic mb-2 tracking-tighter">SALMAN PRO</h1>
+            <h1 class="text-3xl font-black text-center text-blue-600 italic mb-2 tracking-tighter">My Finance Manager</h1>
             <p class="text-center text-[10px] text-gray-400 uppercase tracking-widest mb-8">Centralized Finance System</p>
             
             <div id="email-step">
@@ -38,7 +38,7 @@
             </div>
 
             <div id="pin-step" class="hidden-section text-center">
-                <p id="welcome-text" class="font-bold mb-4 text-lg"></p>
+                <p id="welcome-text" class="font-bold mb-4 text-lg text-blue-600"></p>
                 <input type="password" id="login-pin" placeholder="ENTER PIN" class="mb-6 text-center text-3xl tracking-widest border-b-2 border-blue-600 w-1/2 mx-auto outline-none">
                 <button onclick="verifyAccess()" class="btn-primary w-full uppercase">Unlock Access</button>
                 <button onclick="fullLogout()" class="mt-8 text-xs text-red-500 underline block w-full uppercase">Switch Account</button>
@@ -48,7 +48,10 @@
 
     <div id="main-app" class="hidden-section pb-28">
         <header class="bg-white border-b p-4 sticky top-0 flex justify-between items-center z-50 shadow-sm">
-            <span class="font-black text-blue-600 italic">SALMAN WALLET</span>
+            <div>
+                <span class="font-black text-blue-600 italic">SALMAN WALLET</span>
+                <p id="top-user-name" class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter leading-none"></p>
+            </div>
             <div class="flex gap-4 items-center">
                 <button onclick="showSection('category-section')" class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full"><i class="fas fa-tags mr-1"></i>Categories</button>
             </div>
@@ -62,19 +65,19 @@
 
             <div class="grid grid-cols-2 gap-3">
                 <div class="card p-4 border-l-4 border-green-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase">Income</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Total Income</p>
                     <p id="sum-inc" class="text-lg font-black text-green-600">৳0</p>
                 </div>
                 <div class="card p-4 border-l-4 border-red-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase">Expense</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase">Total Expense</p>
                     <p id="sum-exp" class="text-lg font-black text-red-600">৳0</p>
                 </div>
                 <div class="card p-4 border-l-4 border-teal-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">I will get</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">Loan Taking</p>
                     <p id="sum-loan-given" class="text-lg font-black text-teal-600">৳0</p>
                 </div>
                 <div class="card p-4 border-l-4 border-orange-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">I owe</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">Loan Given</p>
                     <p id="sum-loan-taken" class="text-lg font-black text-orange-500">৳0</p>
                 </div>
             </div>
@@ -93,56 +96,54 @@
                 <button onclick="openRemModal()" class="card p-3 text-center text-blue-600"><i class="fas fa-bell text-xl mb-1"></i><p class="text-[9px] font-bold">BILL</p></button>
             </div>
 
-            <h3 class="font-black text-xs text-slate-400 uppercase pt-4">Active Bill Reminders</h3>
+            <h3 class="font-black text-xs text-slate-400 uppercase pt-4">Pending Reminders</h3>
             <div id="dash-rem-list" class="space-y-2"></div>
         </div>
 
         <div id="history-section" class="p-4 hidden-section space-y-4">
-            <h2 class="text-xl font-black">History & Logs</h2>
+            <h2 class="text-xl font-black">Transaction Logs</h2>
             <div id="history-list" class="space-y-2"></div>
         </div>
 
         <div id="reminder-section" class="p-4 hidden-section space-y-4">
-            <h2 class="text-xl font-black">Recurring Bills</h2>
+            <h2 class="text-xl font-black">All Bill Reminders</h2>
             <div id="full-rem-list" class="space-y-3"></div>
         </div>
 
         <div id="category-section" class="p-4 hidden-section space-y-4">
-            <h2 class="text-xl font-black">Manage Categories</h2>
+            <h2 class="text-xl font-black">Categories</h2>
             <div class="card p-4 space-y-3">
-                <input type="text" id="cat-name" placeholder="New Category Name">
-                <select id="cat-type"><option value="income">For Income</option><option value="expense">For Expense</option></select>
-                <button onclick="saveCategory()" class="btn-primary w-full">ADD CATEGORY</button>
+                <input type="text" id="cat-name" placeholder="Name">
+                <select id="cat-type"><option value="income">Income</option><option value="expense">Expense</option></select>
+                <button onclick="saveCategory()" class="btn-primary w-full">ADD</button>
             </div>
             <div id="category-list" class="space-y-2"></div>
         </div>
 
         <nav class="nav-bar shadow-2xl">
-            <button onclick="showSection('home-section')" id="nav-home" class="active-nav px-4 flex flex-col items-center"><i class="fas fa-home text-lg"></i><span class="text-[8px] font-bold mt-1">HOME</span></button>
-            <button onclick="showSection('history-section')" id="nav-history" class="px-4 flex flex-col items-center"><i class="fas fa-list-alt text-lg"></i><span class="text-[8px] font-bold mt-1">HISTORY</span></button>
-            <button onclick="showSection('reminder-section')" id="nav-reminder" class="px-4 flex flex-col items-center"><i class="fas fa-clock text-lg"></i><span class="text-[8px] font-bold mt-1">BILLS</span></button>
-            <button onclick="fullLogout()" class="px-4 text-red-400 flex flex-col items-center"><i class="fas fa-sign-out-alt text-lg"></i><span class="text-[8px] font-bold mt-1">LOGOUT</span></button>
+            <button onclick="showSection('home-section')" id="nav-home" class="active-nav px-4 flex flex-col items-center"><i class="fas fa-home text-lg"></i><span class="text-[8px] mt-1">HOME</span></button>
+            <button onclick="showSection('history-section')" id="nav-history" class="px-4 flex flex-col items-center"><i class="fas fa-list-alt text-lg"></i><span class="text-[8px] mt-1">HISTORY</span></button>
+            <button onclick="showSection('reminder-section')" id="nav-reminder" class="px-4 flex flex-col items-center"><i class="fas fa-clock text-lg"></i><span class="text-[8px] mt-1">BILLS</span></button>
+            <button onclick="fullLogout()" class="px-4 text-red-400 flex flex-col items-center"><i class="fas fa-sign-out-alt text-lg"></i><span class="text-[8px] mt-1">LOGOUT</span></button>
         </nav>
     </div>
 
     <div id="entry-modal" class="fixed inset-0 bg-black/70 hidden-section flex items-center justify-center p-4 z-[200]">
-        <div class="bg-white w-full max-w-sm p-6 rounded-3xl animate-slide-up">
-            <h3 id="modal-title" class="font-black mb-6 text-blue-600 uppercase">New Record</h3>
+        <div class="bg-white w-full max-w-sm p-6 rounded-3xl">
+            <h3 id="modal-title" class="font-black mb-6 text-blue-600 uppercase">Entry</h3>
             <div class="space-y-4">
-                <input type="text" id="f-name" placeholder="Title / Person Name">
+                <input type="text" id="f-name" placeholder="Title">
                 <div class="flex gap-2">
-                    <input type="number" id="f-amount" placeholder="Amount (৳)">
-                    <select id="f-cat"><option value="General">General</option></select>
+                    <input type="number" id="f-amount" placeholder="Amount">
+                    <select id="f-cat"></select>
                 </div>
                 <input type="date" id="f-date">
-                <textarea id="f-note" placeholder="Remarks / Notes (Optional)" rows="2"></textarea>
-                
+                <textarea id="f-note" placeholder="Note (Optional)" rows="2"></textarea>
                 <div id="loan-opt" class="hidden-section flex gap-4 p-2 bg-slate-50 rounded-xl">
-                    <label class="text-xs font-bold"><input type="radio" name="ltype" value="given" checked> Giving Loan (Receivable)</label>
-                    <label class="text-xs font-bold"><input type="radio" name="ltype" value="taken"> Taking Loan (Payable)</label>
+                    <label class="text-[10px] font-bold"><input type="radio" name="ltype" value="given" checked> Loan Giving (Receivable)</label>
+                    <label class="text-[10px] font-bold"><input type="radio" name="ltype" value="taken"> Loan Taking (Payable)</label>
                 </div>
-
-                <button onclick="saveEntry()" class="btn-primary w-full">SAVE DATA</button>
+                <button onclick="saveEntry()" class="btn-primary w-full">SAVE</button>
                 <button onclick="closeModals()" class="w-full text-xs text-gray-400 font-bold py-2">CANCEL</button>
             </div>
         </div>
@@ -150,16 +151,16 @@
 
     <div id="rem-modal" class="fixed inset-0 bg-black/70 hidden-section flex items-center justify-center p-4 z-[200]">
         <div class="bg-white w-full max-w-sm p-6 rounded-3xl">
-            <h3 class="font-black mb-6 text-blue-600 uppercase">Setup Reminder</h3>
+            <h3 class="font-black mb-6 text-blue-600 uppercase">New Bill</h3>
             <div class="space-y-4">
-                <input type="text" id="r-name" placeholder="Bill Name (e.g. WiFi)">
-                <input type="number" id="r-amount" placeholder="Amount (৳)">
+                <input type="text" id="r-name" placeholder="Name">
+                <input type="number" id="r-amount" placeholder="Amount">
                 <input type="date" id="r-date">
                 <div class="flex items-center gap-2 bg-slate-50 p-3 rounded-xl">
                     <input type="checkbox" id="r-repeat" style="width: auto;">
                     <label class="text-xs font-bold">Auto-Repeat Every Month</label>
                 </div>
-                <button onclick="saveReminder()" class="btn-primary w-full">ACTIVATE</button>
+                <button onclick="saveReminder()" class="btn-primary w-full">SAVE</button>
                 <button onclick="closeModals()" class="w-full text-xs text-gray-400 font-bold py-2">CANCEL</button>
             </div>
         </div>
@@ -169,15 +170,14 @@
         <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-2xl">
             <div class="text-center border-b pb-4 mb-4">
                 <h2 id="inv-id" class="text-blue-600 font-black text-xs"></h2>
-                <h3 class="text-xl font-black uppercase">Loan Invoice</h3>
+                <h3 class="text-xl font-black uppercase">Loan Settle</h3>
             </div>
             <div class="space-y-3 text-sm mb-6">
                 <div class="flex justify-between"><span>Title:</span> <span id="inv-name" class="font-bold"></span></div>
-                <div class="flex justify-between"><span>Total Loan:</span> <span id="inv-total" class="font-bold"></span></div>
                 <div class="flex justify-between text-orange-600 border-t pt-2 text-lg font-black"><span>Due:</span> <span id="inv-due"></span></div>
             </div>
-            <input type="number" id="settle-amt" placeholder="Enter Payment Amount" class="mb-4">
-            <button onclick="confirmSettle()" class="btn-primary w-full bg-orange-600">SUBMIT PAYMENT</button>
+            <input type="number" id="settle-amt" placeholder="Amount to pay">
+            <button onclick="confirmSettle()" class="btn-primary w-full bg-orange-600 mt-4">CONFIRM</button>
             <button onclick="closeModals()" class="w-full text-xs text-gray-400 mt-4 font-bold uppercase">Close</button>
         </div>
     </div>
@@ -203,7 +203,7 @@
         let activeType = '';
         let targetLoan = null;
 
-        // --- AUTH LOGIC ---
+        // --- AUTH & NAME DISPLAY ---
         window.handleLogin = async () => {
             const e = document.getElementById('user-email').value, p = document.getElementById('user-password').value;
             if(!e || !p) return alert("Fill fields!");
@@ -223,42 +223,32 @@
             else alert("Wrong PIN!");
         };
 
-        // --- ENTRY LOGIC ---
+        // --- TRANSACTION LOGIC ---
         window.saveEntry = async () => {
             const n = document.getElementById('f-name').value, a = parseFloat(document.getElementById('f-amount').value), d = document.getElementById('f-date').value;
             if(!n || !a || !d) return alert("Required fields missing!");
-
-            const data = { 
-                name: n, amount: a, date: d, 
-                category: document.getElementById('f-cat').value, 
-                note: document.getElementById('f-note').value, 
-                type: activeType, createdAt: new Date() 
-            };
-
+            const data = { name: n, amount: a, date: d, category: document.getElementById('f-cat').value, note: document.getElementById('f-note').value, type: activeType, createdAt: new Date() };
             if(activeType === 'loan') {
                 data.ltype = document.querySelector('input[name="ltype"]:checked').value;
                 data.remaining = a;
                 data.loanID = "LN-" + Math.floor(1000 + Math.random() * 9000);
             }
-
             await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), data);
             closeModals(); refreshData();
         };
 
-        // --- LOAN SETTLE / SEARCH ---
+        // --- LOAN ACTIONS ---
         window.searchLoan = async () => {
             const id = document.getElementById('loan-search').value.trim().toUpperCase();
             const snap = await getDocs(query(collection(db, `users/${auth.currentUser.uid}/records`), where("loanID", "==", id)));
-            if(snap.empty) return alert("Invalid Loan ID");
+            if(snap.empty) return alert("Loan ID not found!");
             openSettlePopup(snap.docs[0]);
         };
 
         window.openSettlePopup = (docSnap) => {
-            targetLoan = docSnap;
-            const d = docSnap.data();
+            targetLoan = docSnap; const d = docSnap.data();
             document.getElementById('inv-id').innerText = d.loanID;
             document.getElementById('inv-name').innerText = d.name;
-            document.getElementById('inv-total').innerText = "৳"+d.amount;
             document.getElementById('inv-due').innerText = "৳"+d.remaining;
             document.getElementById('settle-amt').value = d.remaining;
             document.getElementById('settle-modal').classList.remove('hidden-section');
@@ -268,27 +258,15 @@
             const pay = parseFloat(document.getElementById('settle-amt').value);
             const d = targetLoan.data();
             if(!pay || pay <= 0) return;
-
-            // Update record as Income/Expense depending on loan type
             await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), {
                 name: "Settle: " + d.name, amount: pay, date: new Date().toISOString().split('T')[0],
                 category: "Loan Payment", type: d.ltype === 'given' ? 'income' : 'expense', createdAt: new Date()
             });
-
-            // Reduce loan remaining
             await updateDoc(targetLoan.ref, { remaining: increment(-pay) });
-            alert("Payment Recorded!"); closeModals(); refreshData();
-        };
-
-        // --- REMINDERS ---
-        window.saveReminder = async () => {
-            const n = document.getElementById('r-name').value, a = parseFloat(document.getElementById('r-amount').value), d = document.getElementById('r-date').value;
-            const rep = document.getElementById('r-repeat').checked;
-            if(!n || !a || !d) return alert("Fill all fields!");
-            await addDoc(collection(db, `users/${auth.currentUser.uid}/reminders`), { name: n, amount: a, date: d, repeat: rep, createdAt: new Date() });
             closeModals(); refreshData();
         };
 
+        // --- REMINDERS ---
         window.payBill = async (id, name, amt, date, repeat) => {
             await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), { 
                 name: "Paid Bill: " + name, amount: amt, date: new Date().toISOString().split('T')[0], category: 'Bills', type: 'expense', createdAt: new Date() 
@@ -300,16 +278,14 @@
             refreshData();
         };
 
-        // --- CATEGORIES & HELPERS ---
-        window.saveCategory = async () => {
-            const n = document.getElementById('cat-name').value, t = document.getElementById('cat-type').value;
-            if(n) { await addDoc(collection(db, `users/${auth.currentUser.uid}/categories`), { name: n, type: t }); refreshData(); }
+        window.saveReminder = async () => {
+            const n = document.getElementById('r-name').value, a = parseFloat(document.getElementById('r-amount').value), d = document.getElementById('r-date').value;
+            if(!n || !a || !d) return alert("Fill all!");
+            await addDoc(collection(db, `users/${auth.currentUser.uid}/reminders`), { name: n, amount: a, date: d, repeat: document.getElementById('r-repeat').checked, createdAt: new Date() });
+            closeModals(); refreshData();
         };
 
-        window.deleteItem = async (col, id) => {
-            if(confirm("Confirm Delete?")) { await deleteDoc(doc(db, `users/${auth.currentUser.uid}/${col}`, id)); refreshData(); }
-        };
-
+        // --- CORE DATA HANDLING ---
         window.refreshData = async () => {
             const uid = auth.currentUser.uid;
             const recSnap = await getDocs(query(collection(db, `users/${uid}/records`), orderBy("createdAt", "desc")));
@@ -329,17 +305,15 @@
                     if(d.ltype === 'given') { lG += d.remaining; total -= d.amount; }
                     else { lT += d.remaining; total += d.amount; }
                 }
-
                 hist += `<div class="card p-4 flex justify-between items-center border-l-4 ${d.type==='income'?'border-green-500':d.type==='expense'?'border-red-500':'border-orange-500'}">
                     <div class="flex-1">
                         <p class="font-bold text-sm uppercase">${d.name} ${d.loanID ? '<span class="text-blue-600">#'+d.loanID+'</span>':''}</p>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase">${d.date} | ${d.category}</p>
-                        ${d.note ? `<p class="text-[10px] text-slate-500 italic mt-1">Note: ${d.note}</p>` : ''}
+                        <p class="text-[9px] text-gray-400 font-bold">${d.date} | ${d.category}</p>
                         ${d.type==='loan' && d.remaining > 0 ? `<p class="text-[10px] font-black text-orange-600">DUE: ৳${d.remaining}</p>` : ''}
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="font-black text-sm">৳${d.amount}</span>
-                        ${d.type==='loan' && d.remaining > 0 ? `<button onclick="openSettlePopupByData('${s.id}')" class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[10px] font-black">SETTLE</button>` : ''}
+                        ${d.type==='loan' && d.remaining > 0 ? `<button onclick="openSettlePopupByData('${s.id}')" class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[10px] font-black">PAY</button>` : ''}
                         <button onclick="deleteItem('records', '${s.id}')" class="text-red-200"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`;
@@ -348,7 +322,7 @@
             remSnap.forEach(s => {
                 const r = s.data();
                 remH += `<div class="card p-4 border-l-4 border-blue-500 flex justify-between items-center bg-blue-50/20">
-                    <div><p class="font-bold text-sm">${r.name}</p><p class="text-[10px] text-red-500 font-bold uppercase italic">DUE: ${r.date}</p></div>
+                    <div><p class="font-bold text-sm">${r.name}</p><p class="text-[10px] text-red-500 font-bold italic">DUE: ${r.date}</p></div>
                     <div class="flex gap-2">
                         <button onclick="payBill('${s.id}', '${r.name}', ${r.amount}, '${r.date}', ${r.repeat})" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-[10px] font-bold">PAID</button>
                         <button onclick="deleteItem('reminders', '${s.id}')" class="text-red-200 p-2"><i class="fas fa-times"></i></button>
@@ -366,27 +340,38 @@
             document.getElementById('full-rem-list').innerHTML = remH || '<p class="text-center text-xs text-gray-400">No active bills.</p>';
         };
 
-        window.openSettlePopupByData = async (id) => {
-            const s = await getDoc(doc(db, `users/${auth.currentUser.uid}/records`, id));
-            openSettlePopup(s);
-        };
+        window.openSettlePopupByData = async (id) => { const s = await getDoc(doc(db, `users/${auth.currentUser.uid}/records`, id)); openSettlePopup(s); };
+        window.saveCategory = async () => { const n = document.getElementById('cat-name').value, t = document.getElementById('cat-type').value; if(n) { await addDoc(collection(db, `users/${auth.currentUser.uid}/categories`), { name: n, type: t }); refreshData(); } };
+        window.deleteItem = async (col, id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, `users/${auth.currentUser.uid}/${col}`, id)); refreshData(); } };
 
         window.showSection = (id) => {
             ['home-section', 'history-section', 'reminder-section', 'category-section'].forEach(s => document.getElementById(s).classList.add('hidden-section'));
             document.getElementById(id).classList.remove('hidden-section');
             document.querySelectorAll('.nav-bar button').forEach(b => b.classList.remove('active-nav'));
-            document.getElementById('nav-'+id.split('-')[0]).classList.add('active-nav');
+            const nId = 'nav-'+id.split('-')[0]; if(document.getElementById(nId)) document.getElementById(nId).classList.add('active-nav');
         };
 
         window.openEntry = (t) => { activeType=t; document.getElementById('modal-title').innerText = "New "+t; document.getElementById('loan-opt').classList.toggle('hidden-section', t!=='loan'); document.getElementById('entry-modal').classList.remove('hidden-section'); };
         window.openRemModal = () => document.getElementById('rem-modal').classList.remove('hidden-section');
         window.closeModals = () => document.querySelectorAll('.fixed').forEach(m => m.classList.add('hidden-section'));
 
+        // --- AUTH OBSERVER (NAME FETCHING) ---
         onAuthStateChanged(auth, async user => {
             if(user) {
                 const s = await getDoc(doc(db, "users", user.uid));
-                if(s.exists()){ document.getElementById('email-step').classList.add('hidden-section'); document.getElementById('pin-step').classList.remove('hidden-section'); document.getElementById('welcome-text').innerText = "Hello, "+s.data().username; }
-                else { document.getElementById('email-step').classList.add('hidden-section'); document.getElementById('setup-step').classList.remove('hidden-section'); }
+                if(s.exists()){ 
+                    const userName = s.data().username;
+                    // এখানে নাম সেট করা হচ্ছে
+                    document.getElementById('top-user-name').innerText = userName; 
+                    document.getElementById('welcome-text').innerText = "Hi, " + userName;
+                    
+                    document.getElementById('email-step').classList.add('hidden-section'); 
+                    document.getElementById('pin-step').classList.remove('hidden-section'); 
+                }
+                else { 
+                    document.getElementById('email-step').classList.add('hidden-section'); 
+                    document.getElementById('setup-step').classList.remove('hidden-section'); 
+                }
             }
         });
 
