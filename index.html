@@ -3,143 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Pro - MD. SALMAN</title>
+    <title>Finance Master Pro - SALMAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
         .hidden-section { display: none !important; }
-        .card { background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        input, select { border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; width: 100%; outline-color: #2563eb; }
+        .card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: 0.3s; }
+        input, select { border: 1.5px solid #e2e8f0; padding: 12px; border-radius: 12px; width: 100%; outline-color: #2563eb; }
         .nav-btn { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #94a3b8; }
         .active-nav { color: #2563eb !important; font-weight: bold; }
-        .btn-primary { background: #2563eb; color: white; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; }
-        .income-text { color: #10b981; }
-        .expense-text { color: #ef4444; }
+        .btn-primary { background: #2563eb; color: white; padding: 14px; border-radius: 12px; font-weight: bold; width: 100%; transition: 0.2s; }
+        .btn-primary:active { transform: scale(0.98); }
     </style>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800">
 
     <div id="auth-section" class="flex items-center justify-center min-h-screen p-4">
-        <div class="card p-8 w-full max-w-md">
-            <h1 class="text-2xl font-black text-center mb-6 text-blue-600 uppercase tracking-tighter">Finance Manager</h1>
+        <div class="card p-8 w-full max-w-md border-t-8 border-blue-600">
+            <h1 class="text-3xl font-black text-center mb-2 text-blue-600 tracking-tighter italic">SALMAN PRO</h1>
+            <p class="text-center text-gray-400 text-[10px] mb-8 uppercase tracking-widest">Ultimate Finance Manager</p>
             
             <div id="email-step">
                 <input type="email" id="user-email" placeholder="Gmail Address" class="mb-4">
                 <input type="password" id="user-password" placeholder="Password" class="mb-4">
-                <button onclick="handleLogin()" id="auth-btn" class="btn-primary uppercase">Login / Register</button>
-                <p class="text-[10px] text-center mt-4 text-gray-400">Direct access enabled. No verification link needed.</p>
+                <button onclick="handleLogin()" class="btn-primary uppercase">Login / Register</button>
             </div>
 
             <div id="setup-step" class="hidden-section">
-                <p class="text-center font-bold text-blue-600 mb-4">Complete Your Profile</p>
+                <p class="text-center font-bold text-blue-600 mb-4">Profile Setup</p>
                 <input type="text" id="setup-username" placeholder="Your Name" class="mb-4">
-                <input type="password" id="setup-pin" placeholder="Set Secret PIN (Any Length)" class="mb-4 text-center">
-                <button onclick="saveProfile()" class="bg-green-600 text-white w-full py-3 rounded-lg font-bold">START USING APP</button>
+                <input type="password" id="setup-pin" placeholder="Set Any Length PIN" class="mb-4 text-center">
+                <button onclick="saveProfile()" class="bg-green-600 text-white w-full py-4 rounded-xl font-bold">START APPLICATION</button>
             </div>
 
             <div id="pin-step" class="hidden-section text-center">
-                <div class="text-blue-500 text-5xl mb-4"><i class="fas fa-user-lock"></i></div>
                 <p id="welcome-text" class="text-lg font-bold mb-4"></p>
-                <input type="password" id="login-pin" placeholder="ENTER PIN" class="mb-6 text-center text-2xl tracking-widest">
+                <input type="password" id="login-pin" placeholder="ENTER PIN" class="mb-6 text-center text-3xl tracking-widest border-b-2 border-blue-600 outline-none w-1/2 mx-auto">
                 <button onclick="verifyAccess()" class="btn-primary">UNLOCK ACCESS</button>
-                <button onclick="fullLogout()" class="mt-8 text-xs text-red-400 underline block w-full">Logout</button>
+                <button onclick="fullLogout()" class="mt-8 text-xs text-red-400 underline block w-full uppercase">Switch Account</button>
             </div>
         </div>
     </div>
 
-    <div id="main-app" class="hidden-section pb-24">
+    <div id="main-app" class="hidden-section pb-28">
         <header class="bg-white border-b p-4 sticky top-0 flex justify-between items-center z-50 shadow-sm">
-            <span class="font-black text-blue-600 uppercase tracking-widest">Salman's Wallet</span>
-            <button onclick="showSection('settings-section')" class="text-gray-400 p-2"><i class="fas fa-cog"></i></button>
+            <span class="font-black text-blue-600 tracking-tight">SALMAN WALLET</span>
+            <div class="flex gap-4">
+                <button onclick="showSection('loan-section')" class="text-orange-500"><i class="fas fa-handshake"></i></button>
+                <button onclick="showSection('settings-section')" class="text-gray-400"><i class="fas fa-cog"></i></button>
+            </div>
         </header>
 
         <div id="home-section" class="p-4 space-y-4">
-            <div class="card p-6 bg-blue-600 text-white shadow-blue-200">
-                <p class="text-xs opacity-70 uppercase tracking-widest font-bold">Current Net Balance</p>
-                <p id="net-balance" class="text-4xl font-black mt-1">৳0</p>
+            <div class="card p-6 bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-xl shadow-blue-100">
+                <p class="text-xs opacity-70 font-bold uppercase tracking-widest">Net Cash Balance</p>
+                <p id="net-balance" class="text-4xl font-black mt-2">৳0</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <div onclick="openModal('income')" class="card p-4 text-center cursor-pointer border-b-4 border-green-500">
-                    <p class="text-[10px] text-gray-400 font-bold uppercase">Income</p>
-                    <p id="sum-inc" class="text-xl font-black income-text">৳0</p>
-                </div>
-                <div onclick="openModal('expense')" class="card p-4 text-center cursor-pointer border-b-4 border-red-500">
-                    <p class="text-[10px] text-gray-400 font-bold uppercase">Expense</p>
-                    <p id="sum-exp" class="text-xl font-black expense-text">৳0</p>
-                </div>
+                <div class="card p-4 bg-white"><p class="text-[10px] text-gray-400 font-bold">INCOME</p><p id="sum-inc" class="text-xl font-black text-green-600">৳0</p></div>
+                <div class="card p-4 bg-white"><p class="text-[10px] text-gray-400 font-bold">EXPENSE</p><p id="sum-exp" class="text-xl font-black text-red-600">৳0</p></div>
             </div>
 
-            <h3 class="font-black text-xs text-gray-400 uppercase mt-6 ml-1">Recent Activities</h3>
-            <div id="dash-history" class="space-y-2"></div>
+            <div class="flex justify-between items-center pt-4">
+                <h3 class="font-black text-xs text-slate-400 uppercase">Action Center</h3>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="openEntry('income')" class="card p-4 text-[10px] font-bold text-green-600 flex flex-col items-center gap-1"><i class="fas fa-plus-circle text-lg"></i>INCOME</button>
+                <button onclick="openEntry('expense')" class="card p-4 text-[10px] font-bold text-red-600 flex flex-col items-center gap-1"><i class="fas fa-minus-circle text-lg"></i>EXPENSE</button>
+                <button onclick="openEntry('loan')" class="card p-4 text-[10px] font-bold text-orange-600 flex flex-col items-center gap-1"><i class="fas fa-users text-lg"></i>LOAN</button>
+            </div>
+
+            <h3 class="font-black text-xs text-slate-400 uppercase pt-4">Bill Reminders</h3>
+            <div id="dash-rem-list" class="space-y-2"></div>
+        </div>
+
+        <div id="loan-section" class="p-4 hidden-section space-y-4">
+            <h2 class="text-xl font-black">Loan Tracker</h2>
+            <div class="card p-4 border-2 border-blue-500/10">
+                <p class="text-[10px] font-bold text-blue-600 mb-2">SEARCH LOAN ID & PAY</p>
+                <div class="flex gap-2">
+                    <input type="text" id="loan-search" placeholder="LN-XXXX" class="!p-2 uppercase font-bold text-sm">
+                    <button onclick="searchLoan()" class="bg-blue-600 text-white px-4 rounded-lg font-bold"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            <div id="loan-list" class="space-y-3"></div>
         </div>
 
         <div id="reminder-section" class="p-4 hidden-section space-y-4">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black">Bill Reminders</h2>
-                <button onclick="openRemModal()" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold">+ New Bill</button>
+                <h2 class="text-xl font-black">Recurring Bills</h2>
+                <button onclick="openRemModal()" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-bold">+ New Bill</button>
             </div>
             <div id="full-rem-list" class="space-y-3"></div>
         </div>
 
         <div id="history-section" class="p-4 hidden-section space-y-4">
-            <h2 class="text-xl font-black">Full History</h2>
-            <div id="master-history-list" class="space-y-2"></div>
+            <h2 class="text-xl font-black">History</h2>
+            <div id="master-history" class="space-y-2"></div>
         </div>
 
-        <div id="settings-section" class="p-4 hidden-section">
-            <h2 class="text-xl font-black mb-4">Access Settings</h2>
-            <div class="card p-6 text-center">
-                <p id="settings-user" class="font-bold text-blue-600 mb-6"></p>
-                <button onclick="fullLogout()" class="w-full bg-red-50 text-red-600 py-4 rounded-xl font-black border border-red-100 uppercase tracking-widest text-xs">Full Account Logout</button>
+        <div id="settings-section" class="p-4 hidden-section space-y-4 text-center">
+            <h2 class="text-xl font-black">Account</h2>
+            <div class="card p-8">
+                <p id="user-display" class="font-black text-blue-600 text-lg mb-6"></p>
+                <button onclick="fullLogout()" class="w-full bg-red-100 text-red-600 py-4 rounded-xl font-bold">LOGOUT ACCOUNT</button>
             </div>
         </div>
 
-        <nav class="fixed bottom-0 w-full bg-white border-t p-4 flex justify-around shadow-lg z-50">
-            <button onclick="showSection('home-section')" id="nav-home" class="nav-btn active-nav"><i class="fas fa-th-large text-xl mb-1"></i><span>Home</span></button>
-            <button onclick="showSection('reminder-section')" id="nav-reminder" class="nav-btn"><i class="fas fa-calendar-check text-xl mb-1"></i><span>Bills</span></button>
-            <button onclick="showSection('history-section')" id="nav-history" class="nav-btn"><i class="fas fa-list-ul text-xl mb-1"></i><span>History</span></button>
+        <nav class="fixed bottom-0 w-full bg-white border-t p-4 flex justify-around shadow-2xl z-50">
+            <button onclick="showSection('home-section')" id="nav-home" class="nav-btn active-nav"><i class="fas fa-home text-xl mb-1"></i><span>Home</span></button>
+            <button onclick="showSection('reminder-section')" id="nav-reminder" class="nav-btn"><i class="fas fa-bell text-xl mb-1"></i><span>Bills</span></button>
+            <button onclick="showSection('history-section')" id="nav-history" class="nav-btn"><i class="fas fa-history text-xl mb-1"></i><span>History</span></button>
         </nav>
     </div>
 
-    <div id="entry-modal" class="fixed inset-0 bg-black/60 hidden-section flex items-center justify-center p-4 z-[100]">
-        <div class="bg-white w-full max-w-sm p-6 rounded-2xl shadow-2xl">
-            <h3 id="modal-title" class="font-black mb-6 uppercase text-blue-600 tracking-widest">Entry</h3>
+    <div id="entry-modal" class="fixed inset-0 bg-black/70 hidden-section flex items-center justify-center p-4 z-[100]">
+        <div class="bg-white w-full max-w-sm p-6 rounded-3xl animate-slide-up">
+            <h3 id="modal-title" class="font-black mb-6 text-blue-600 uppercase">Entry</h3>
             <div class="space-y-4">
-                <input type="text" id="f-name" placeholder="Title / Description">
+                <input type="text" id="f-name" placeholder="Title (e.g. Salary, Rent)">
                 <input type="number" id="f-amount" placeholder="Amount (৳)">
                 <input type="date" id="f-date">
-                <div id="loan-type-selector" class="hidden-section flex gap-4 p-2 bg-slate-50 rounded-lg">
-                    <label class="text-xs font-bold"><input type="radio" name="ltype" value="given" checked> Given</label>
-                    <label class="text-xs font-bold"><input type="radio" name="ltype" value="taken"> Taken</label>
+                <div id="loan-opt" class="hidden-section flex gap-4 p-2 bg-slate-50 rounded-lg">
+                    <label class="text-xs font-bold"><input type="radio" name="ltype" value="given" checked> GIVEN</label>
+                    <label class="text-xs font-bold"><input type="radio" name="ltype" value="taken"> TAKEN</label>
                 </div>
-                <button onclick="saveEntry()" class="btn-primary">SAVE TRANSACTION</button>
-                <button onclick="closeModals()" class="w-full text-xs text-gray-400 font-bold mt-2">CANCEL</button>
+                <button onclick="saveEntry()" class="btn-primary uppercase">Save Data</button>
+                <button onclick="closeModals()" class="w-full text-xs text-gray-400 font-bold py-2">CANCEL</button>
             </div>
         </div>
     </div>
 
-    <div id="rem-modal" class="fixed inset-0 bg-black/60 hidden-section flex items-center justify-center p-4 z-[100]">
-        <div class="bg-white w-full max-w-sm p-6 rounded-2xl shadow-2xl">
-            <h3 class="font-black mb-6 uppercase text-blue-600 tracking-widest">New Bill Reminder</h3>
+    <div id="rem-modal" class="fixed inset-0 bg-black/70 hidden-section flex items-center justify-center p-4 z-[100]">
+        <div class="bg-white w-full max-w-sm p-6 rounded-3xl">
+            <h3 class="font-black mb-6 text-blue-600">ADD BILL</h3>
             <div class="space-y-4">
-                <input type="text" id="r-name" placeholder="Bill Name (e.g. WiFi Bill)">
+                <input type="text" id="r-name" placeholder="Bill Name">
                 <input type="number" id="r-amount" placeholder="Amount (৳)">
                 <input type="date" id="r-date">
                 <div class="flex items-center gap-2 bg-slate-50 p-3 rounded-lg">
                     <input type="checkbox" id="r-repeat" style="width: auto;">
-                    <label for="r-repeat" class="text-xs font-bold">Repeat Monthly</label>
+                    <label class="text-xs font-bold">Repeat this bill monthly</label>
                 </div>
-                <button onclick="saveReminder()" class="btn-primary">SET REMINDER</button>
-                <button onclick="closeModals()" class="w-full text-xs text-gray-400 font-bold mt-2">CANCEL</button>
+                <button onclick="saveReminder()" class="btn-primary">ACTIVATE</button>
+                <button onclick="closeModals()" class="w-full text-xs text-gray-400 font-bold py-2">CANCEL</button>
             </div>
+        </div>
+    </div>
+
+    <div id="invoice-modal" class="fixed inset-0 bg-black/80 hidden-section flex items-center justify-center p-4 z-[200]">
+        <div class="bg-white w-full max-w-md p-6 rounded-3xl">
+            <div class="text-center border-b pb-4 mb-4">
+                <h2 class="text-xl font-black">LOAN INVOICE</h2>
+                <p id="inv-id" class="text-blue-600 font-bold text-xs"></p>
+            </div>
+            <div class="space-y-2 text-sm mb-6">
+                <div class="flex justify-between"><span>Name:</span> <span id="inv-name" class="font-bold"></span></div>
+                <div class="flex justify-between"><span>Total Loan:</span> <span id="inv-total" class="font-bold"></span></div>
+                <div class="flex justify-between text-green-600"><span>Paid:</span> <span id="inv-paid" class="font-bold"></span></div>
+                <div class="flex justify-between text-red-600 border-t pt-2 text-lg font-black"><span>Due:</span> <span id="inv-due"></span></div>
+            </div>
+            <input type="number" id="inv-pay-amt" placeholder="Payment Amount" class="mb-4">
+            <button onclick="payLoanConfirm()" class="btn-primary bg-green-600">SUBMIT PAYMENT</button>
+            <button onclick="closeModals()" class="w-full text-xs text-gray-400 mt-4">CLOSE</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy, where, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDC6k-LlYquK8qv_qoG_HuBpgTSLd_Geo8",
@@ -155,20 +189,15 @@
         const db = getFirestore(app);
 
         let activeType = '';
+        let targetLoan = null;
 
-        // --- AUTHENTICATION ---
+        // --- AUTH ---
         window.handleLogin = async () => {
             const email = document.getElementById('user-email').value;
             const pass = document.getElementById('user-password').value;
-            if(!email || !pass) return alert("Please fill Email and Password");
-            
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-            } catch {
-                try {
-                    await createUserWithEmailAndPassword(auth, email, pass);
-                } catch(e) { alert("Registration Error: " + e.message); }
-            }
+            if(!email || !pass) return alert("Fill fields!");
+            try { await signInWithEmailAndPassword(auth, email, pass); } 
+            catch { try { await createUserWithEmailAndPassword(auth, email, pass); } catch(e) { alert(e.message); } }
         };
 
         window.saveProfile = async () => {
@@ -177,130 +206,140 @@
             if(name && pin) {
                 await setDoc(doc(db, "users", auth.currentUser.uid), { username: name, pin: pin });
                 location.reload();
-            } else { alert("Please set Name and PIN!"); }
+            }
         };
 
         window.verifyAccess = async () => {
-            const entered = document.getElementById('login-pin').value;
+            const pin = document.getElementById('login-pin').value;
             const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
-            if(snap.exists() && snap.data().pin === entered) {
+            if(snap.data().pin === pin) {
                 document.getElementById('auth-section').classList.add('hidden-section');
                 document.getElementById('main-app').classList.remove('hidden-section');
-                refreshAllData();
-            } else { alert("Incorrect Secret PIN!"); }
+                refreshData();
+            } else { alert("Wrong PIN!"); }
         };
 
-        // --- CORE LOGIC ---
+        // --- DATA ---
         window.saveEntry = async () => {
             const name = document.getElementById('f-name').value;
-            const amount = parseFloat(document.getElementById('f-amount').value);
+            const amt = parseFloat(document.getElementById('f-amount').value);
             const date = document.getElementById('f-date').value;
+            if(!name || !amt || !date) return alert("All fields are required!");
 
-            if(!name || isNaN(amount) || !date) return alert("Fill all fields correctly!");
-
-            const data = { name, amount, date, type: activeType, createdAt: new Date() };
+            const data = { name, amount: amt, date, type: activeType, createdAt: new Date() };
             if(activeType === 'loan') {
                 data.ltype = document.querySelector('input[name="ltype"]:checked').value;
+                data.paid = 0;
+                data.loanID = "LN-" + Math.floor(1000 + Math.random() * 9000);
             }
-
             await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), data);
-            closeModals(); refreshAllData();
+            closeModals(); refreshData();
         };
 
         window.saveReminder = async () => {
             const name = document.getElementById('r-name').value;
-            const amount = parseFloat(document.getElementById('r-amount').value);
+            const amt = parseFloat(document.getElementById('r-amount').value);
             const date = document.getElementById('r-date').value;
-            const repeat = document.getElementById('r-repeat').checked;
-
-            if(!name || isNaN(amount) || !date) return alert("Fill all fields!");
-
-            await addDoc(collection(db, `users/${auth.currentUser.uid}/reminders`), {
-                name, amount, date, repeat, createdAt: new Date()
-            });
-            closeModals(); refreshAllData();
+            const rep = document.getElementById('r-repeat').checked;
+            if(!name || !amt || !date) return alert("Fill all!");
+            await addDoc(collection(db, `users/${auth.currentUser.uid}/reminders`), { name, amount: amt, date, repeat: rep, createdAt: new Date() });
+            closeModals(); refreshData();
         };
 
-        window.deleteItem = async (col, id) => {
-            if(confirm("Permanently delete this?")) {
+        window.payBill = async (id, name, amt, rep) => {
+            await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), { name: "Bill: "+name, amount: amt, date: new Date().toISOString().split('T')[0], type: 'expense', createdAt: new Date() });
+            if(!rep) await deleteDoc(doc(db, `users/${auth.currentUser.uid}/reminders`, id));
+            alert("Bill Paid & Added to Expense");
+            refreshData();
+        };
+
+        window.searchLoan = async () => {
+            const id = document.getElementById('loan-search').value.trim().toUpperCase();
+            const snap = await getDocs(query(collection(db, `users/${auth.currentUser.uid}/records`), where("loanID", "==", id)));
+            if(snap.empty) return alert("Invalid Loan ID");
+            targetLoan = snap.docs[0];
+            const d = targetLoan.data();
+            document.getElementById('inv-id').innerText = d.loanID;
+            document.getElementById('inv-name').innerText = d.name;
+            document.getElementById('inv-total').innerText = "৳"+d.amount;
+            document.getElementById('inv-paid').innerText = "৳"+d.paid;
+            document.getElementById('inv-due').innerText = "৳"+(d.amount - d.paid);
+            document.getElementById('invoice-modal').classList.remove('hidden-section');
+        };
+
+        window.payLoanConfirm = async () => {
+            const p = parseFloat(document.getElementById('inv-pay-amt').value);
+            if(!p || p <= 0) return alert("Enter amount");
+            await updateDoc(targetLoan.ref, { paid: increment(p) });
+            alert("Payment Recorded!");
+            closeModals(); refreshData();
+        };
+
+        window.deleteData = async (col, id) => {
+            if(confirm("Confirm Delete?")) {
                 await deleteDoc(doc(db, `users/${auth.currentUser.uid}/${col}`, id));
-                refreshAllData();
+                refreshData();
             }
         };
 
-        window.payBill = async (id, name, amt, repeat) => {
-            // Add to Expense
-            await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), {
-                name: "Bill: " + name,
-                amount: amt,
-                date: new Date().toISOString().split('T')[0],
-                type: 'expense',
-                createdAt: new Date()
-            });
-
-            if(!repeat) {
-                await deleteDoc(doc(db, `users/${auth.currentUser.uid}/reminders`, id));
-            } else {
-                alert("Bill added to expenses. Monthly reminder stays active.");
-            }
-            refreshAllData();
-        };
-
-        window.refreshAllData = async () => {
+        window.refreshData = async () => {
             const uid = auth.currentUser.uid;
-            const recordSnap = await getDocs(query(collection(db, `users/${uid}/records`), orderBy("createdAt", "desc")));
-            const remindSnap = await getDocs(collection(db, `users/${uid}/reminders`));
+            const recSnap = await getDocs(query(collection(db, `users/${uid}/records`), orderBy("createdAt", "desc")));
+            const remSnap = await getDocs(collection(db, `users/${uid}/reminders`));
 
-            let total = 0, incTotal = 0, expTotal = 0;
-            let histHtml = '', remHtml = '';
+            let total = 0, incS = 0, expS = 0, hist = '', remH = '', loanH = '';
 
-            recordSnap.forEach(docSnap => {
-                const d = docSnap.data(); const id = docSnap.id;
-                if(d.type === 'income') { total += d.amount; incTotal += d.amount; }
-                else { total -= d.amount; expTotal += d.amount; }
+            recSnap.forEach(docSnap => {
+                const d = docSnap.data(), id = docSnap.id;
+                if(d.type === 'income') { total += d.amount; incS += d.amount; }
+                else { total -= d.amount; expS += d.amount; }
 
-                histHtml += `<div class="card p-3 flex justify-between items-center text-sm border-l-4 ${d.type==='income'?'border-green-500':'border-red-500'}">
-                    <div><p class="font-bold">${d.name}</p><p class="text-[10px] text-gray-400 uppercase font-bold">${d.date}</p></div>
+                const histItem = `<div class="card p-4 flex justify-between items-center border-l-4 ${d.type==='income'?'border-green-500':'border-red-500'}">
+                    <div><p class="font-bold text-sm">${d.name} ${d.loanID ? '<span class="text-blue-500">#'+d.loanID+'</span>':''}</p><p class="text-[10px] text-gray-400 uppercase">${d.date}</p></div>
                     <div class="flex items-center gap-4">
-                        <span class="${d.type==='income'?'income-text':'expense-text'} font-black">৳${d.amount}</span>
-                        <button onclick="deleteItem('records', '${id}')" class="text-red-200"><i class="fas fa-trash"></i></button>
+                        <span class="${d.type==='income'?'text-green-600':'text-red-600'} font-black text-sm">৳${d.amount}</span>
+                        <button onclick="deleteData('records', '${id}')" class="text-red-200"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`;
+                hist += histItem;
+                if(d.type === 'loan') {
+                    loanH += `<div class="card p-4 border-l-4 border-orange-500">
+                        <p class="text-[10px] font-bold text-gray-400">ID: ${d.loanID} | TYPE: ${d.ltype.toUpperCase()}</p>
+                        <p class="font-bold">${d.name}</p>
+                        <p class="text-xs text-red-500 font-bold">Due: ৳${d.amount - d.paid}</p>
+                    </div>`;
+                }
             });
 
-            remindSnap.forEach(docSnap => {
-                const r = docSnap.data(); const id = docSnap.id;
-                remHtml += `<div class="card p-4 border-l-4 border-blue-500 bg-blue-50/30 flex justify-between items-center">
-                    <div><p class="font-bold text-sm">${r.name}</p><p class="text-[10px] text-red-500 font-bold">DUE: ${r.date} ${r.repeat?'(Repeats)':''}</p></div>
+            remSnap.forEach(docSnap => {
+                const r = docSnap.data(), id = docSnap.id;
+                remH += `<div class="card p-4 border-l-4 border-blue-500 bg-blue-50/50 flex justify-between items-center">
+                    <div><p class="font-black text-sm uppercase">${r.name}</p><p class="text-[10px] text-red-500 font-bold">DATE: ${r.date} ${r.repeat?'(REPEATING)':''}</p></div>
                     <div class="flex gap-2">
-                        <button onclick="payBill('${id}', '${r.name}', ${r.amount}, ${r.repeat})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold">PAID</button>
-                        <button onclick="deleteItem('reminders', '${id}')" class="text-red-300 p-2"><i class="fas fa-trash-alt"></i></button>
+                        <button onclick="payBill('${id}', '${r.name}', ${r.amount}, ${r.repeat})" class="bg-green-600 text-white px-3 py-1 rounded-lg text-[10px] font-black shadow-lg shadow-green-100">PAID</button>
+                        <button onclick="deleteData('reminders', '${id}')" class="text-red-300 p-2"><i class="fas fa-trash-alt"></i></button>
                     </div>
                 </div>`;
             });
 
             document.getElementById('net-balance').innerText = '৳' + total;
-            document.getElementById('sum-inc').innerText = '৳' + incTotal;
-            document.getElementById('sum-exp').innerText = '৳' + expTotal;
-            document.getElementById('dash-history').innerHTML = histHtml;
-            document.getElementById('master-history-list').innerHTML = histHtml;
-            document.getElementById('full-rem-list').innerHTML = remHtml || '<p class="text-center text-gray-400 text-xs mt-10">No bill reminders set.</p>';
+            document.getElementById('sum-inc').innerText = '৳' + incS;
+            document.getElementById('sum-exp').innerText = '৳' + expS;
+            document.getElementById('dash-history').innerHTML = hist;
+            document.getElementById('master-history').innerHTML = hist;
+            document.getElementById('dash-rem-list').innerHTML = remH;
+            document.getElementById('full-rem-list').innerHTML = remH;
+            document.getElementById('loan-list').innerHTML = loanH || '<p class="text-center text-gray-400 text-xs">No loan records.</p>';
         };
 
-        // --- NAVIGATION ---
         window.showSection = (id) => {
             document.querySelectorAll('#main-app > div').forEach(d => d.classList.add('hidden-section'));
             document.getElementById(id).classList.remove('hidden-section');
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-            document.getElementById('nav-' + id.split('-')[0]).classList.add('active-nav');
+            const nId = id.split('-')[0]; if(document.getElementById('nav-'+nId)) document.getElementById('nav-'+nId).classList.add('active-nav');
         };
 
-        window.openModal = (type) => { 
-            activeType = type; 
-            document.getElementById('modal-title').innerText = "Add " + type;
-            document.getElementById('loan-type-selector').classList.toggle('hidden-section', type !== 'loan');
-            document.getElementById('entry-modal').classList.remove('hidden-section'); 
-        };
+        window.openEntry = (t) => { activeType=t; document.getElementById('modal-title').innerText = "Add " + t; document.getElementById('loan-opt').classList.toggle('hidden-section', t !== 'loan'); document.getElementById('entry-modal').classList.remove('hidden-section'); };
         window.openRemModal = () => document.getElementById('rem-modal').classList.remove('hidden-section');
         window.closeModals = () => { document.querySelectorAll('.fixed').forEach(m => m.classList.add('hidden-section')); };
 
@@ -311,7 +350,7 @@
                     document.getElementById('email-step').classList.add('hidden-section');
                     document.getElementById('pin-step').classList.remove('hidden-section');
                     document.getElementById('welcome-text').innerText = "Hi, " + snap.data().username;
-                    document.getElementById('settings-user').innerText = "Logged in as: " + snap.data().username;
+                    document.getElementById('user-display').innerText = snap.data().username;
                 } else {
                     document.getElementById('email-step').classList.add('hidden-section');
                     document.getElementById('setup-step').classList.remove('hidden-section');
