@@ -24,34 +24,44 @@
       Finance Manager
     </h1>
 
-    <!-- Email Login -->
+    <!-- LOGIN -->
     <div id="loginBox">
-      <input id="email" type="email" placeholder="Email address" class="w-full p-3 border rounded mb-3">
-      <input id="password" type="password" placeholder="Password" class="w-full p-3 border rounded mb-4">
-      <button onclick="login()" class="w-full bg-blue-600 text-white py-3 rounded font-bold">
+      <input id="email" type="email" placeholder="Email address"
+        class="w-full p-3 border rounded mb-3">
+      <input id="password" type="password" placeholder="Password"
+        class="w-full p-3 border rounded mb-4">
+      <button onclick="login()"
+        class="w-full bg-blue-600 text-white py-3 rounded font-bold">
         Login / Register
       </button>
     </div>
 
-    <!-- First time setup -->
+    <!-- FIRST TIME SETUP -->
     <div id="setupBox" class="hidden">
-      <p class="text-center text-green-600 font-bold mb-3">First time setup</p>
-      <input id="username" placeholder="Your name" class="w-full p-3 border rounded mb-3">
-      <input id="pin" maxlength="4" placeholder="4 digit PIN" class="w-full p-3 border rounded mb-4 text-center tracking-widest">
-      <button onclick="saveProfile()" class="w-full bg-green-600 text-white py-3 rounded font-bold">
+      <p class="text-center text-green-600 font-bold mb-3">
+        First Time Setup
+      </p>
+      <input id="username" placeholder="Your name"
+        class="w-full p-3 border rounded mb-3">
+      <input id="pin" maxlength="4" placeholder="4 Digit PIN"
+        class="w-full p-3 border rounded mb-4 text-center tracking-widest">
+      <button onclick="saveProfile()"
+        class="w-full bg-green-600 text-white py-3 rounded font-bold">
         Save & Continue
       </button>
     </div>
 
-    <!-- PIN Login -->
+    <!-- PIN LOGIN -->
     <div id="pinBox" class="hidden text-center">
       <p id="welcome" class="font-bold mb-3"></p>
       <input id="pinLogin" maxlength="4" placeholder="Enter PIN"
         class="w-full p-3 border rounded mb-4 text-center text-2xl tracking-widest">
-      <button onclick="verifyPin()" class="w-full bg-blue-600 text-white py-3 rounded font-bold">
+      <button onclick="verifyPin()"
+        class="w-full bg-blue-600 text-white py-3 rounded font-bold">
         Unlock App
       </button>
-      <button onclick="fullLogout()" class="mt-4 text-sm text-red-500">
+      <button onclick="fullLogout()"
+        class="mt-4 text-sm text-red-500">
         Switch Account
       </button>
     </div>
@@ -64,18 +74,20 @@
 
 <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
   <span class="font-bold">SALMAN WALLET</span>
-  <button onclick="fullLogout()"><i class="fas fa-power-off"></i></button>
+  <button onclick="fullLogout()">
+    <i class="fas fa-power-off"></i>
+  </button>
 </header>
 
 <div class="p-4 space-y-4">
 
   <div class="grid grid-cols-2 gap-4">
     <div class="card p-4 border-l-4 border-green-500">
-      <p class="text-xs text-gray-500">INCOME</p>
+      <p class="text-xs text-gray-500">TOTAL INCOME</p>
       <p id="income" class="text-xl font-bold">৳0</p>
     </div>
     <div class="card p-4 border-l-4 border-red-500">
-      <p class="text-xs text-gray-500">EXPENSE</p>
+      <p class="text-xs text-gray-500">TOTAL EXPENSE</p>
       <p id="expense" class="text-xl font-bold">৳0</p>
     </div>
   </div>
@@ -99,6 +111,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+/* 🔥 YOUR FIREBASE CONFIG 🔥 */
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -112,56 +125,79 @@ const appFB = initializeApp(firebaseConfig);
 const auth = getAuth(appFB);
 const db = getFirestore(appFB);
 
-/* ---------- LOGIN ---------- */
-window.login = async () => {
-  const email = emailEl.value;
-  const pass = password.value;
-  if(!email || !pass) return alert("Fill all fields");
+/* ELEMENTS */
+const loginBox = document.getElementById("loginBox");
+const setupBox = document.getElementById("setupBox");
+const pinBox   = document.getElementById("pinBox");
+const authBox  = document.getElementById("auth");
+const appBox   = document.getElementById("app");
 
-  try{
-    await signInWithEmailAndPassword(auth,email,pass);
-  }catch{
-    await createUserWithEmailAndPassword(auth,email,pass);
+/* LOGIN */
+window.login = async () => {
+  const email = document.getElementById("email").value;
+  const pass  = document.getElementById("password").value;
+
+  if(!email || !pass){
+    alert("Email & Password দিন");
+    return;
+  }
+
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch {
+    await createUserWithEmailAndPassword(auth, email, pass);
   }
 };
 
-/* ---------- SETUP ---------- */
+/* SAVE PROFILE */
 window.saveProfile = async () => {
-  if(pin.value.length!==4) return alert("4 digit PIN required");
+  const name = document.getElementById("username").value;
+  const pin  = document.getElementById("pin").value;
+
+  if(!name || pin.length !== 4){
+    alert("Name & 4 digit PIN দিন");
+    return;
+  }
+
   await setDoc(doc(db,"users",auth.currentUser.uid),{
-    username:username.value,
-    pin:pin.value
+    username: name,
+    pin: pin
   });
+
   location.reload();
 };
 
-/* ---------- PIN VERIFY ---------- */
+/* VERIFY PIN */
 window.verifyPin = async () => {
+  const entered = document.getElementById("pinLogin").value;
   const snap = await getDoc(doc(db,"users",auth.currentUser.uid));
-  if(snap.data().pin===pinLogin.value){
+
+  if(snap.exists() && snap.data().pin === entered){
     authBox.classList.add("hidden");
-    app.classList.remove("hidden");
-  } else alert("Wrong PIN");
+    appBox.classList.remove("hidden");
+  } else {
+    alert("Wrong PIN");
+  }
 };
 
-/* ---------- LOGOUT ---------- */
-window.fullLogout = async ()=>{
+/* LOGOUT */
+window.fullLogout = async () => {
   await signOut(auth);
   location.reload();
 };
 
-/* ---------- OBSERVER ---------- */
-const authBox=document.getElementById("auth");
-onAuthStateChanged(auth,async(user)=>{
+/* AUTH OBSERVER */
+onAuthStateChanged(auth, async (user) => {
   if(!user) return;
 
-  const snap=await getDoc(doc(db,"users",user.uid));
   loginBox.classList.add("hidden");
 
+  const snap = await getDoc(doc(db,"users",user.uid));
   if(snap.exists()){
     pinBox.classList.remove("hidden");
-    welcome.innerText="Welcome, "+snap.data().username;
-  }else{
+    document.getElementById("welcome").innerText =
+      "Welcome, " + snap.data().username;
+  } else {
     setupBox.classList.remove("hidden");
   }
 });
