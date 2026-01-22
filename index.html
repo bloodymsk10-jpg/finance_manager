@@ -336,7 +336,7 @@
             filterHistory();
         };
 
-        window.filterHistory = () => {
+       window.filterHistory = () => {
             const search = document.getElementById('hist-search').value.toLowerCase();
             const from = document.getElementById('hist-from').value;
             const to = document.getElementById('hist-to').value;
@@ -347,6 +347,37 @@
                 const matchesDate = from && to ? (r.date >= from && r.date <= to) : true;
                 return matchesTab && matchesSearch && matchesDate;
             });
+
+            let hHtml = '';
+            filtered.forEach(d => {
+                const color = d.type==='income'?'green':d.type==='expense'?'red':'orange';
+                const loanStatus = d.type === 'loan' ? (d.ltype === 'given' ? 'I gave to person' : 'I took from person') : '';
+                
+                hHtml += `<div class="card p-4 border-l-4 border-${color}-500 mb-2 relative">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <p class="font-black text-xs text-blue-500 uppercase">${d.entryID || 'N/A'}</p>
+                            <span class="text-[8px] bg-slate-100 px-2 py-0.5 rounded-full font-bold uppercase">${d.type}</span>
+                        </div>
+                        <p class="font-bold text-sm uppercase mt-1">${d.name} ${d.loanID ? '<span class="text-blue-500">#'+d.loanID+'</span>' : ''}</p>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase">${d.date} | ${d.category}</p>
+                        
+                        ${d.note ? `<p class="text-[10px] bg-gray-50 p-2 mt-2 rounded border-l-2 border-gray-300 italic text-gray-600"><i class="fas fa-sticky-note mr-1 text-gray-400"></i>${d.note}</p>` : ''}
+
+                        ${d.type==='loan' ? `<p class="text-[10px] font-bold text-slate-500 italic mt-1">${loanStatus}</p>` : ''}
+                        ${d.type==='loan' && d.remaining > 0 ? `<p class="text-[10px] font-black text-orange-600 mt-1">DUE: ৳${d.remaining}</p>` : d.type==='loan' ? '<p class="text-[10px] font-black text-green-600 mt-1">FULLY SETTLED</p>' : ''}
+                    </div>
+                    <div class="flex justify-between items-center mt-3 pt-2 border-t border-dashed">
+                        <span class="font-black text-md">৳${d.amount}</span>
+                        <div class="flex gap-2">
+                             ${d.type==='loan' && d.remaining > 0 ? `<button onclick="openSettlePopupByID('${d.id}')" class="bg-orange-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase">Settle</button>` : ''}
+                             <button onclick="deleteItem('records', '${d.id}')" class="text-red-300"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('history-list').innerHTML = hHtml || '<p class="text-center text-xs text-gray-400 py-10">No records found.</p>';
+        };
 
             let hHtml = '';
             filtered.forEach(d => {
@@ -407,3 +438,4 @@
     </script>
 </body>
 </html>
+
