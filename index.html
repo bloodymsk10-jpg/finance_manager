@@ -3,118 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Manager - MD. SALMAN</title>
+    <title>Finance Manager - Salman</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
-        .hidden-section { display: none; }
+        .hidden-section { display: none !important; }
         .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        input, select { border: 1px solid #ddd; padding: 10px; border-radius: 8px; width: 100%; outline-color: #2563eb; }
-        .modal { background: rgba(0,0,0,0.5); position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 100; }
+        input, select { border: 1px solid #ddd; padding: 12px; border-radius: 8px; width: 100%; outline-color: #2563eb; font-size: 14px; }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #6b7280; }
+        .active-nav { color: #2563eb !important; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-50 font-sans">
 
     <div id="auth-section" class="flex items-center justify-center min-h-screen p-4">
         <div class="card p-8 w-full max-w-md">
-            <h1 class="text-2xl font-bold text-center mb-6 text-blue-600">Finance Manager</h1>
+            <h1 class="text-2xl font-bold text-center mb-6 text-blue-600">Personal Finance App</h1>
             
             <div id="email-login-step">
                 <input type="email" id="user-email" placeholder="Gmail Address" class="mb-4">
                 <input type="password" id="user-password" placeholder="Password" class="mb-4">
-                <button onclick="handleGmailLogin()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold">Verify & Login</button>
+                <button onclick="handleGmailLogin()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold">Login / Register</button>
             </div>
 
             <div id="setup-step" class="hidden-section">
-                <p class="text-green-600 mb-4 text-center font-bold">Verified! Setup Your Profile</p>
-                <input type="text" id="setup-username" placeholder="Full Name" class="mb-4">
-                <input type="password" id="setup-pin" maxlength="4" placeholder="Set 4-Digit App PIN" class="mb-4 text-center text-xl">
-                <button onclick="saveUserProfile()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold">Save & Continue</button>
+                <p class="text-green-600 mb-4 text-center font-bold">Verify Successful!</p>
+                <input type="text" id="setup-username" placeholder="Username" class="mb-4">
+                <input type="password" id="setup-pin" maxlength="4" placeholder="Set 4-Digit PIN" class="mb-4 text-center text-xl">
+                <button onclick="saveUserProfile()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold">Complete Setup</button>
             </div>
 
             <div id="pin-step" class="hidden-section text-center">
-                <div class="mb-4 text-blue-600"><i class="fas fa-user-circle text-5xl"></i></div>
                 <p id="welcome-back" class="text-lg font-bold mb-4"></p>
-                <input type="password" id="login-pin" maxlength="4" placeholder="Enter App PIN" class="mb-4 text-center text-2xl tracking-widest">
+                <input type="password" id="login-pin" maxlength="4" placeholder="Enter PIN" class="mb-4 text-center text-2xl tracking-widest">
                 <button onclick="verifyPin()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold">Unlock App</button>
-                <button onclick="fullLogout()" class="mt-4 text-sm text-red-500 underline">Logout Entirely</button>
+                <button onclick="fullLogout()" class="mt-6 text-xs text-red-500 underline">Switch Account</button>
             </div>
         </div>
     </div>
 
     <div id="main-app" class="hidden-section pb-24">
-        <header class="bg-blue-600 text-white p-4 sticky top-0 flex justify-between items-center z-50">
-            <span class="font-bold tracking-wide">SALMAN'S WALLET</span>
-            <button onclick="showSection('settings-section')"><i class="fas fa-cog"></i></button>
+        <header class="bg-white border-b p-4 sticky top-0 flex justify-between items-center z-50">
+            <span class="font-black text-blue-600 text-lg">SALMAN WALLET</span>
+            <button onclick="showSection('settings-section')"><i class="fas fa-cog text-gray-500 text-xl"></i></button>
         </header>
 
         <div id="home-section" class="p-4 space-y-4">
             <div class="grid grid-cols-2 gap-3">
-                <div class="card p-4 text-center border-b-4 border-green-500">
-                    <p class="text-xs text-gray-500 uppercase">Income</p>
-                    <p id="sum-income" class="text-xl font-bold text-green-600">৳0</p>
+                <div class="card p-3 border-l-4 border-green-500">
+                    <p class="text-[10px] text-gray-400">INCOME</p>
+                    <p id="dash-income" class="font-bold text-green-600">৳0</p>
                 </div>
-                <div class="card p-4 text-center border-b-4 border-red-500">
-                    <p class="text-xs text-gray-500 uppercase">Expense</p>
-                    <p id="sum-expense" class="text-xl font-bold text-red-600">৳0</p>
+                <div class="card p-3 border-l-4 border-red-500">
+                    <p class="text-[10px] text-gray-400">EXPENSE</p>
+                    <p id="dash-expense" class="font-bold text-red-600">৳0</p>
                 </div>
-                <div class="card p-4 text-center border-b-4 border-orange-500">
-                    <p class="text-xs text-gray-500 uppercase">Loan Given</p>
-                    <p id="sum-loan-given" class="text-xl font-bold text-orange-600">৳0</p>
+                <div class="card p-3 border-l-4 border-orange-500">
+                    <p class="text-[10px] text-gray-400">LOAN GIVEN</p>
+                    <p id="dash-loan-given" class="font-bold text-orange-500">৳0</p>
                 </div>
-                <div class="card p-4 text-center border-b-4 border-blue-500">
-                    <p class="text-xs text-gray-500 uppercase">Loan Taken</p>
-                    <p id="sum-loan-taken" class="text-xl font-bold text-blue-600">৳0</p>
+                <div class="card p-3 border-l-4 border-blue-500">
+                    <p class="text-[10px] text-gray-400">LOAN TAKEN</p>
+                    <p id="dash-loan-taken" class="font-bold text-blue-500">৳0</p>
                 </div>
             </div>
 
-            <div class="card p-4 bg-white border border-blue-100">
-                <p class="text-center text-gray-500 text-sm">Net Balance</p>
-                <p id="net-balance" class="text-center text-3xl font-black text-blue-800">৳0</p>
+            <div class="card p-5 bg-blue-600 text-white text-center">
+                <p class="text-xs opacity-80">Net Balance</p>
+                <p id="dash-net" class="text-3xl font-black">৳0</p>
             </div>
 
-            <div class="grid grid-cols-3 gap-2 mt-4">
-                <button onclick="openModal('income')" class="bg-green-600 text-white p-3 rounded-lg text-xs font-bold shadow-lg"><i class="fas fa-plus-circle block mb-1 text-lg"></i> INCOME</button>
-                <button onclick="openModal('expense')" class="bg-red-600 text-white p-3 rounded-lg text-xs font-bold shadow-lg"><i class="fas fa-minus-circle block mb-1 text-lg"></i> EXPENSE</button>
-                <button onclick="openModal('loan')" class="bg-orange-600 text-white p-3 rounded-lg text-xs font-bold shadow-lg"><i class="fas fa-handshake block mb-1 text-lg"></i> LOAN</button>
+            <div id="bill-reminder-area" class="card p-4 border border-red-100 bg-red-50 hidden-section">
+                <h3 class="text-red-600 font-bold text-sm"><i class="fas fa-bell"></i> Reminders</h3>
+                <div id="reminder-list" class="text-xs mt-2"></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="openModal('income')" class="bg-white p-3 rounded-lg border text-xs font-bold text-green-600">INCOME</button>
+                <button onclick="openModal('expense')" class="bg-white p-3 rounded-lg border text-xs font-bold text-red-600">EXPENSE</button>
+                <button onclick="showSection('loan-section')" class="bg-white p-3 rounded-lg border text-xs font-bold text-orange-600">LOAN</button>
             </div>
         </div>
 
         <div id="loan-section" class="p-4 hidden-section">
-            <h2 class="text-xl font-bold mb-4">Loan Tracking</h2>
-            <div id="loan-list-container" class="space-y-3"></div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold">Loan Records</h2>
+                <button onclick="openModal('loan')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-bold">+ New Loan</button>
+            </div>
+            
+            <div class="card p-4 mb-4">
+                <p class="text-xs font-bold mb-2">Search Loan ID to Pay</p>
+                <div class="flex gap-2">
+                    <input type="text" id="loan-search-id" placeholder="Ex: LOAN-123" class="!p-2">
+                    <button onclick="searchLoan()" class="bg-gray-800 text-white px-4 rounded">Search</button>
+                </div>
+            </div>
+
+            <div id="loan-display-list" class="space-y-3"></div>
         </div>
 
         <div id="history-section" class="p-4 hidden-section">
-            <h2 class="text-xl font-bold mb-4">Transaction History</h2>
+            <h2 class="text-lg font-bold mb-4">History</h2>
             <div id="history-list" class="space-y-2"></div>
         </div>
-
-        <div id="settings-section" class="p-4 hidden-section">
-            <h2 class="text-xl font-bold mb-4">Settings</h2>
-            <div class="card p-4 space-y-4">
-                <button onclick="fullLogout()" class="w-full bg-red-100 text-red-600 p-3 rounded font-bold">FULL LOGOUT (Change Account)</button>
-            </div>
-        </div>
-
-        <nav class="fixed bottom-0 w-full bg-white border-t flex justify-around p-3 shadow-2xl">
-            <button onclick="showSection('home-section')" class="text-blue-600"><i class="fas fa-home text-xl"></i></button>
-            <button onclick="showSection('history-section')"><i class="fas fa-list text-xl text-gray-400"></i></button>
-            <button onclick="showSection('loan-section')"><i class="fas fa-comments-dollar text-xl text-gray-400"></i></button>
-        </nav>
+        
+        <footer class="fixed bottom-0 w-full bg-white border-t p-3 flex justify-around shadow-lg">
+            <button onclick="showSection('home-section')" class="nav-btn active-nav" id="nav-home">
+                <i class="fas fa-home text-lg"></i><span>Dashboard</span>
+            </button>
+            <button onclick="showSection('loan-section')" class="nav-btn" id="nav-loan">
+                <i class="fas fa-hand-holding-usd text-lg"></i><span>Loans</span>
+            </button>
+            <button onclick="showSection('history-section')" class="nav-btn" id="nav-history">
+                <i class="fas fa-history text-lg"></i><span>History</span>
+            </button>
+        </footer>
     </div>
 
-    <div id="trans-modal" class="modal">
-        <div class="bg-white p-6 rounded-xl w-11/12 max-w-md relative">
-            <h2 id="modal-title" class="text-xl font-bold mb-4 uppercase">Entry</h2>
+    <div id="form-modal" class="fixed inset-0 bg-black/50 hidden-section flex items-center justify-center p-4 z-[100]">
+        <div class="bg-white w-full max-w-md p-6 rounded-2xl relative">
+            <h3 id="modal-title" class="text-lg font-bold mb-4 text-blue-600 uppercase tracking-wider">Add Entry</h3>
             <div class="space-y-3">
-                <input type="text" id="entry-name" placeholder="Name/Source">
-                <input type="number" id="entry-amount" placeholder="Amount">
-                <input type="date" id="entry-date">
-                <select id="entry-category"></select>
-                <input type="text" id="entry-note" placeholder="Short Note">
-                <button onclick="saveTransaction()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold">SAVE ENTRY</button>
-                <button onclick="closeModal()" class="w-full text-gray-400 mt-2">Cancel</button>
+                <input type="text" id="f-name" placeholder="Source / Name">
+                <input type="number" id="f-amount" placeholder="Amount (৳)">
+                <input type="date" id="f-date">
+                <div id="loan-type-box" class="hidden-section flex gap-4 p-2 bg-gray-50 rounded">
+                   <label><input type="radio" name="ltype" value="given" checked> Given</label>
+                   <label><input type="radio" name="ltype" value="taken"> Taken</label>
+                </div>
+                <input type="text" id="f-note" placeholder="Note (Optional)">
+                <button onclick="submitEntry()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold mt-2">Save Data</button>
+                <button onclick="closeModal()" class="w-full text-gray-400 text-sm mt-2">Close</button>
             </div>
         </div>
     </div>
@@ -122,7 +141,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, getDocs, orderBy, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDC6k-LlYquK8qv_qoG_HuBpgTSLd_Geo8",
@@ -130,141 +149,146 @@
             projectId: "finance-manager-46f3b",
             storageBucket: "finance-manager-46f3b.firebasestorage.app",
             messagingSenderId: "155610396831",
-            appId: "1:155610396831:web:76633015fd7a28ea7b0aaa",
-            measurementId: "G-JL2VGQEDPM"
+            appId: "1:155610396831:web:76633015fd7a28ea7b0aaa"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let currentType = '';
+        let activeType = '';
 
         // --- AUTH ---
         window.handleGmailLogin = async () => {
             const email = document.getElementById('user-email').value;
             const pass = document.getElementById('user-password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, pass);
-                checkUserDoc();
-            } catch (e) {
-                try {
-                    await createUserWithEmailAndPassword(auth, email, pass);
-                    document.getElementById('email-login-step').classList.add('hidden-section');
-                    document.getElementById('setup-step').classList.remove('hidden-section');
-                } catch (err) { alert(err.message); }
-            }
-        };
-
-        const checkUserDoc = async () => {
-            const user = auth.currentUser;
-            const snap = await getDoc(doc(db, "users", user.uid));
-            if(snap.exists()){
-                localStorage.setItem('salman_user', JSON.stringify(snap.data()));
-                showPinStep();
-            } else {
-                document.getElementById('email-login-step').classList.add('hidden-section');
-                document.getElementById('setup-step').classList.remove('hidden-section');
-            }
+            try { await signInWithEmailAndPassword(auth, email, pass); } 
+            catch { try { await createUserWithEmailAndPassword(auth, email, pass); } catch(e){ alert(e.message); } }
         };
 
         window.saveUserProfile = async () => {
-            const username = document.getElementById('setup-username').value;
+            const user = auth.currentUser;
+            const name = document.getElementById('setup-username').value;
             const pin = document.getElementById('setup-pin').value;
-            if(username && pin.length === 4){
-                const data = { username, pin, uid: auth.currentUser.uid };
-                await setDoc(doc(db, "users", auth.currentUser.uid), data);
-                localStorage.setItem('salman_user', JSON.stringify(data));
+            if(name && pin.length === 4) {
+                await setDoc(doc(db, "users", user.uid), { username: name, pin: pin });
                 location.reload();
             }
         };
 
-        const showPinStep = () => {
-            const user = JSON.parse(localStorage.getItem('salman_user'));
-            document.getElementById('email-login-step').classList.add('hidden-section');
-            document.getElementById('pin-step').classList.remove('hidden-section');
-            document.getElementById('welcome-back').innerText = "Hi, " + user.username;
-        };
-
-        window.verifyPin = () => {
-            const pin = document.getElementById('login-pin').value;
-            const saved = JSON.parse(localStorage.getItem('salman_user')).pin;
-            if(pin === saved){
+        window.verifyPin = async () => {
+            const entered = document.getElementById('login-pin').value;
+            const user = auth.currentUser;
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if(snap.exists() && snap.data().pin === entered) {
                 document.getElementById('auth-section').classList.add('hidden-section');
                 document.getElementById('main-app').classList.remove('hidden-section');
-                loadDashboard();
+                loadAllData();
             } else { alert("Wrong PIN!"); }
         };
 
-        window.fullLogout = () => { signOut(auth); localStorage.clear(); location.reload(); };
-
         // --- CORE FUNCTIONS ---
-        window.openModal = (type) => {
-            currentType = type;
-            document.getElementById('modal-title').innerText = "Add " + type;
-            document.getElementById('entry-date').valueAsDate = new Date();
-            document.getElementById('trans-modal').style.display = 'flex';
-        };
-
-        window.closeModal = () => document.getElementById('trans-modal').style.display = 'none';
-
-        window.saveTransaction = async () => {
-            const user = auth.currentUser;
-            const data = {
-                name: document.getElementById('entry-name').value,
-                amount: parseFloat(document.getElementById('entry-amount').value),
-                date: document.getElementById('entry-date').value,
-                type: currentType,
-                note: document.getElementById('entry-note').value,
-                createdAt: new Date()
-            };
-            await addDoc(collection(db, `users/${user.uid}/transactions`), data);
-            closeModal();
-            loadDashboard();
-        };
-
-        window.loadDashboard = async () => {
-            const user = auth.currentUser;
-            const q = query(collection(db, `users/${user.uid}/transactions`), orderBy("createdAt", "desc"));
-            const snap = await getDocs(q);
-            
-            let totals = { income: 0, expense: 0, loan_given: 0, loan_taken: 0 };
-            let historyHtml = '';
-
-            snap.forEach(doc => {
-                const d = doc.data();
-                if(d.type === 'income') totals.income += d.amount;
-                if(d.type === 'expense') totals.expense += d.amount;
-                if(d.type === 'loan') {
-                    // Logic for loan can be expanded based on sub-type
-                    totals.loan_given += d.amount; 
-                }
-
-                historyHtml += `
-                    <div class="card p-3 flex justify-between items-center border-l-4 ${d.type === 'income' ? 'border-green-500' : 'border-red-500'}">
-                        <div>
-                            <p class="font-bold">${d.name}</p>
-                            <p class="text-[10px] text-gray-400">${d.date}</p>
-                        </div>
-                        <p class="font-bold">৳${d.amount}</p>
-                    </div>`;
-            });
-
-            document.getElementById('sum-income').innerText = '৳' + totals.income;
-            document.getElementById('sum-expense').innerText = '৳' + totals.expense;
-            document.getElementById('net-balance').innerText = '৳' + (totals.income - totals.expense);
-            document.getElementById('history-list').innerHTML = historyHtml;
-        };
-
         window.showSection = (id) => {
             document.querySelectorAll('#main-app > div').forEach(d => d.classList.add('hidden-section'));
             document.getElementById(id).classList.remove('hidden-section');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
+            if(id === 'home-section') document.getElementById('nav-home').classList.add('active-nav');
+            if(id === 'loan-section') document.getElementById('nav-loan').classList.add('active-nav');
+            if(id === 'history-section') document.getElementById('nav-history').classList.add('active-nav');
         };
 
-        onAuthStateChanged(auth, (user) => {
-            if (user && localStorage.getItem('salman_user')) showPinStep();
+        window.openModal = (type) => {
+            activeType = type;
+            document.getElementById('modal-title').innerText = "Add " + type;
+            document.getElementById('f-date').valueAsDate = new Date();
+            document.getElementById('loan-type-box').classList.toggle('hidden-section', type !== 'loan');
+            document.getElementById('form-modal').classList.remove('hidden-section');
+        };
+
+        window.closeModal = () => document.getElementById('form-modal').classList.add('hidden-section');
+
+        window.submitEntry = async () => {
+            const user = auth.currentUser;
+            const amount = parseFloat(document.getElementById('f-amount').value);
+            const entry = {
+                name: document.getElementById('f-name').value,
+                amount: amount,
+                date: document.getElementById('f-date').value,
+                note: document.getElementById('f-note').value,
+                type: activeType,
+                createdAt: new Date()
+            };
+
+            if(activeType === 'loan') {
+                entry.loanID = "LOAN-" + Math.floor(1000 + Math.random() * 9000);
+                entry.loanSubtype = document.querySelector('input[name="ltype"]:checked').value;
+                entry.paidAmount = 0;
+                entry.payments = [];
+            }
+
+            await addDoc(collection(db, `users/${user.uid}/data`), entry);
+            closeModal();
+            loadAllData();
+        };
+
+        window.loadAllData = async () => {
+            const user = auth.currentUser;
+            const q = query(collection(db, `users/${user.uid}/data`), orderBy("createdAt", "desc"));
+            const snap = await getDocs(q);
+            
+            let sums = { inc: 0, exp: 0, lg: 0, lt: 0 };
+            let historyHtml = '';
+            let loanHtml = '';
+
+            snap.forEach(doc => {
+                const d = doc.data();
+                const color = d.type === 'income' ? 'text-green-600' : 'text-red-600';
+                
+                if(d.type === 'income') sums.inc += d.amount;
+                if(d.type === 'expense') sums.exp += d.amount;
+                if(d.type === 'loan') {
+                    if(d.loanSubtype === 'given') sums.lg += (d.amount - d.paidAmount);
+                    else sums.lt += (d.amount - d.paidAmount);
+                    
+                    loanHtml += `<div class="card p-3 border-l-4 border-orange-400">
+                        <div class="flex justify-between font-bold text-sm">
+                            <span>${d.name} (${d.loanID})</span>
+                            <span class="text-orange-600">৳${d.amount - d.paidAmount} left</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400">Total: ৳${d.amount} | Type: ${d.loanSubtype}</p>
+                    </div>`;
+                }
+
+                historyHtml += `<div class="card p-3 flex justify-between items-center text-sm">
+                    <div><p class="font-bold">${d.name}</p><p class="text-[10px] text-gray-400">${d.date}</p></div>
+                    <p class="font-black ${color}">৳${d.amount}</p>
+                </div>`;
+            });
+
+            document.getElementById('dash-income').innerText = '৳' + sums.inc;
+            document.getElementById('dash-expense').innerText = '৳' + sums.exp;
+            document.getElementById('dash-loan-given').innerText = '৳' + sums.lg;
+            document.getElementById('dash-loan-taken').innerText = '৳' + sums.lt;
+            document.getElementById('dash-net').innerText = '৳' + (sums.inc - sums.exp);
+            document.getElementById('history-list').innerHTML = historyHtml;
+            document.getElementById('loan-display-list').innerHTML = loanHtml;
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if (snap.exists()) {
+                    document.getElementById('email-login-step').classList.add('hidden-section');
+                    document.getElementById('pin-step').classList.remove('hidden-section');
+                    document.getElementById('welcome-back').innerText = "Hi, " + snap.data().username;
+                } else {
+                    document.getElementById('email-login-step').classList.add('hidden-section');
+                    document.getElementById('setup-step').classList.remove('hidden-section');
+                }
+            }
         });
 
+        window.fullLogout = () => { signOut(auth); localStorage.clear(); location.reload(); };
     </script>
 </body>
 </html>
