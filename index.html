@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Finance Manager - Professional Version</title>
+    <title>Finance Manager - Advanced Version</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
@@ -11,10 +11,8 @@
         .active-nav { color: #2563eb !important; border-top: 3px solid #2563eb; }
         .card { background: white; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; }
         input, select, textarea { border: 1.5px solid #e2e8f0; padding: 12px; border-radius: 12px; width: 100%; outline: none; font-size: 14px; }
-        input:focus { border-color: #2563eb; }
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #eee; z-index: 1000; }
         .btn-primary { background: #2563eb; color: white; font-weight: bold; border-radius: 12px; padding: 12px; transition: 0.2s; }
-        .btn-primary:active { transform: scale(0.95); }
     </style>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800">
@@ -22,26 +20,20 @@
     <div id="auth-section" class="flex items-center justify-center min-h-screen p-4">
         <div class="card p-8 w-full max-w-md border-t-8 border-blue-600">
             <h1 class="text-3xl font-black text-center text-blue-600 italic mb-2 tracking-tighter">My Finance Manager</h1>
-            <p class="text-center text-[10px] text-gray-400 uppercase tracking-widest mb-8">Centralized Finance System</p>
-            
             <div id="email-step">
                 <input type="email" id="user-email" placeholder="Gmail Address" class="mb-4">
                 <input type="password" id="user-password" placeholder="Password" class="mb-4">
                 <button onclick="handleLogin()" class="btn-primary w-full uppercase">Login / Register</button>
             </div>
-
             <div id="setup-step" class="hidden-section">
-                <p class="text-blue-600 font-bold mb-4 text-center text-sm">Create Your Profile</p>
                 <input type="text" id="setup-username" placeholder="Full Name" class="mb-4">
-                <input type="password" id="setup-pin" placeholder="Set Your Secret PIN" class="mb-4 text-center text-xl">
-                <button onclick="saveProfile()" class="w-full bg-green-600 text-white p-4 rounded-xl font-bold">START SYSTEM</button>
+                <input type="password" id="setup-pin" placeholder="Set PIN" class="mb-4 text-center">
+                <button onclick="saveProfile()" class="w-full bg-green-600 text-white p-4 rounded-xl font-bold">START</button>
             </div>
-
             <div id="pin-step" class="hidden-section text-center">
                 <p id="welcome-text" class="font-bold mb-4 text-lg text-blue-600"></p>
-                <input type="password" id="login-pin" placeholder="ENTER PIN" class="mb-6 text-center text-3xl tracking-widest border-b-2 border-blue-600 w-1/2 mx-auto outline-none">
-                <button onclick="verifyAccess()" class="btn-primary w-full uppercase">Unlock Access</button>
-                <button onclick="fullLogout()" class="mt-8 text-xs text-red-500 underline block w-full uppercase">Switch Account</button>
+                <input type="password" id="login-pin" placeholder="PIN" class="mb-6 text-center text-3xl tracking-widest border-b-2 border-blue-600 w-1/2 mx-auto outline-none">
+                <button onclick="verifyAccess()" class="btn-primary w-full uppercase">Unlock</button>
             </div>
         </div>
     </div>
@@ -49,44 +41,23 @@
     <div id="main-app" class="hidden-section pb-28">
         <header class="bg-white border-b p-4 sticky top-0 flex justify-between items-center z-50 shadow-sm">
             <div>
-                <span class="font-black text-blue-600 italic">My Finance Manager</span>
+                <span class="font-black text-blue-600 italic uppercase">Dashboard</span>
                 <p id="top-user-name" class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter leading-none"></p>
             </div>
-            <div class="flex gap-4 items-center">
-                <button onclick="showSection('category-section')" class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full"><i class="fas fa-tags mr-1"></i>Categories</button>
-            </div>
+            <button onclick="showSection('category-section')" class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Categories</button>
         </header>
 
         <div id="home-section" class="p-4 space-y-4">
             <div class="card p-6 bg-gradient-to-br from-blue-600 to-indigo-800 text-white shadow-xl">
-                <p class="text-[10px] opacity-70 font-bold uppercase tracking-widest">Net Cash Balance</p>
+                <p class="text-[10px] opacity-70 font-bold uppercase tracking-widest">Net Balance</p>
                 <p id="net-balance" class="text-4xl font-black mt-2">৳0</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <div class="card p-4 border-l-4 border-green-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase">Total Income</p>
-                    <p id="sum-inc" class="text-lg font-black text-green-600">৳0</p>
-                </div>
-                <div class="card p-4 border-l-4 border-red-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase">Total Expense</p>
-                    <p id="sum-exp" class="text-lg font-black text-red-600">৳0</p>
-                </div>
-                <div class="card p-4 border-l-4 border-teal-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">I will get (Pabo)</p>
-                    <p id="sum-loan-given" class="text-lg font-black text-teal-600">৳0</p>
-                </div>
-                <div class="card p-4 border-l-4 border-orange-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">I owe (Debo)</p>
-                    <p id="sum-loan-taken" class="text-lg font-black text-orange-500">৳0</p>
-                </div>
-            </div>
-
-            <div class="card p-4 bg-white border-2 border-blue-50">
-                <div class="flex gap-2">
-                    <input type="text" id="loan-search" placeholder="Quick Loan Search ID" class="!p-2 text-sm">
-                    <button onclick="searchLoan()" class="bg-blue-600 text-white px-4 rounded-xl"><i class="fas fa-search"></i></button>
-                </div>
+                <div class="card p-4 border-l-4 border-green-500"><p class="text-[9px] text-gray-400 font-bold uppercase">Income</p><p id="sum-inc" class="text-lg font-black text-green-600">৳0</p></div>
+                <div class="card p-4 border-l-4 border-red-500"><p class="text-[9px] text-gray-400 font-bold uppercase">Expense</p><p id="sum-exp" class="text-lg font-black text-red-600">৳0</p></div>
+                <div class="card p-4 border-l-4 border-teal-500"><p class="text-[9px] text-gray-400 font-bold uppercase italic">Receivable</p><p id="sum-loan-given" class="text-lg font-black text-teal-600">৳0</p></div>
+                <div class="card p-4 border-l-4 border-orange-500"><p class="text-[9px] text-gray-400 font-bold uppercase italic">Payable</p><p id="sum-loan-taken" class="text-lg font-black text-orange-500">৳0</p></div>
             </div>
 
             <div class="grid grid-cols-4 gap-2">
@@ -95,44 +66,34 @@
                 <button onclick="openEntry('loan')" class="card p-3 text-center text-orange-600"><i class="fas fa-handshake text-xl mb-1"></i><p class="text-[9px] font-bold">LOAN</p></button>
                 <button onclick="openRemModal()" class="card p-3 text-center text-blue-600"><i class="fas fa-bell text-xl mb-1"></i><p class="text-[9px] font-bold">BILL</p></button>
             </div>
+
+            <h3 class="font-black text-xs text-slate-400 uppercase pt-4">Coming Bills</h3>
             <div id="dash-rem-list" class="space-y-2"></div>
         </div>
 
         <div id="history-section" class="p-4 hidden-section space-y-4">
             <h2 class="text-xl font-black">Full History</h2>
-            
-            <div class="card p-4 space-y-3 bg-white border border-blue-100">
-                <input type="text" id="hist-search-input" oninput="filterHistory()" placeholder="Search by name or category..." class="text-sm">
+            <div class="card p-4 space-y-3 bg-blue-50/30">
+                <input type="text" id="hist-search" oninput="filterHistory()" placeholder="Search name or category...">
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="date" id="start-date" onchange="filterHistory()" class="!p-2 text-xs">
-                    <input type="date" id="end-date" onchange="filterHistory()" class="!p-2 text-xs">
+                    <input type="date" id="hist-from" onchange="filterHistory()">
+                    <input type="date" id="hist-to" onchange="filterHistory()">
                 </div>
-                <button onclick="clearFilters()" class="text-[10px] font-bold text-blue-600 uppercase w-full text-center">Clear Filters</button>
+                <p id="filter-msg" class="text-[10px] text-blue-600 font-bold text-center italic">Showing only this month's data by default</p>
             </div>
-
             <div id="history-list" class="space-y-2"></div>
         </div>
 
         <div id="reminder-section" class="p-4 hidden-section space-y-4">
-            <h2 class="text-xl font-black">All Bill Reminders</h2>
+            <h2 class="text-xl font-black">All Bills</h2>
             <div id="full-rem-list" class="space-y-3"></div>
         </div>
 
-        <div id="category-section" class="p-4 hidden-section space-y-4">
-            <h2 class="text-xl font-black">Categories</h2>
-            <div class="card p-4 space-y-3">
-                <input type="text" id="cat-name" placeholder="Name">
-                <select id="cat-type"><option value="income">Income</option><option value="expense">Expense</option></select>
-                <button onclick="saveCategory()" class="btn-primary w-full">ADD</button>
-            </div>
-            <div id="category-list" class="space-y-2"></div>
-        </div>
-
         <nav class="nav-bar shadow-2xl">
-            <button onclick="showSection('home-section')" id="nav-home" class="active-nav px-4 flex flex-col items-center"><i class="fas fa-home text-lg"></i><span class="text-[8px] mt-1 uppercase">Home</span></button>
-            <button onclick="showSection('history-section')" id="nav-history" class="px-4 flex flex-col items-center"><i class="fas fa-list-alt text-lg"></i><span class="text-[8px] mt-1 uppercase">History</span></button>
-            <button onclick="showSection('reminder-section')" id="nav-reminder" class="px-4 flex flex-col items-center"><i class="fas fa-clock text-lg"></i><span class="text-[8px] mt-1 uppercase">Bills</span></button>
-            <button onclick="fullLogout()" class="px-4 text-red-400 flex flex-col items-center"><i class="fas fa-sign-out-alt text-lg"></i><span class="text-[8px] mt-1 uppercase">Logout</span></button>
+            <button onclick="showSection('home-section')" id="nav-home" class="active-nav px-4 flex flex-col items-center"><i class="fas fa-home text-lg"></i><span class="text-[8px] mt-1">HOME</span></button>
+            <button onclick="showSection('history-section')" id="nav-history" class="px-4 flex flex-col items-center"><i class="fas fa-history text-lg"></i><span class="text-[8px] mt-1">HISTORY</span></button>
+            <button onclick="showSection('reminder-section')" id="nav-reminder" class="px-4 flex flex-col items-center"><i class="fas fa-clock text-lg"></i><span class="text-[8px] mt-1">BILLS</span></button>
+            <button onclick="fullLogout()" class="px-4 text-red-400 flex flex-col items-center"><i class="fas fa-sign-out-alt text-lg"></i><span class="text-[8px] mt-1">LOGOUT</span></button>
         </nav>
     </div>
 
@@ -141,15 +102,11 @@
             <h3 id="modal-title" class="font-black mb-6 text-blue-600 uppercase">Entry</h3>
             <div class="space-y-4">
                 <input type="text" id="f-name" placeholder="Title">
-                <div class="flex gap-2">
-                    <input type="number" id="f-amount" placeholder="Amount">
-                    <select id="f-cat"></select>
-                </div>
+                <div class="flex gap-2"><input type="number" id="f-amount" placeholder="Amount"><select id="f-cat"></select></div>
                 <input type="date" id="f-date">
-                <textarea id="f-note" placeholder="Note (Optional)" rows="2"></textarea>
                 <div id="loan-opt" class="hidden-section flex gap-4 p-2 bg-slate-50 rounded-xl">
-                    <label class="text-[10px] font-bold"><input type="radio" name="ltype" value="given" checked> Loan Giving (Receivable)</label>
-                    <label class="text-[10px] font-bold"><input type="radio" name="ltype" value="taken"> Loan Taking (Payable)</label>
+                    <label class="text-[10px] font-bold"><input type="radio" name="ltype" value="given" checked> Giving</label>
+                    <label class="text-[10px] font-bold"><input type="radio" name="ltype" value="taken"> Taking</label>
                 </div>
                 <button onclick="saveEntry()" class="btn-primary w-full">SAVE</button>
                 <button onclick="closeModals()" class="w-full text-xs text-gray-400 font-bold py-2">CANCEL</button>
@@ -161,32 +118,17 @@
         <div class="bg-white w-full max-w-sm p-6 rounded-3xl">
             <h3 class="font-black mb-6 text-blue-600 uppercase">New Bill</h3>
             <div class="space-y-4">
-                <input type="text" id="r-name" placeholder="Name">
+                <input type="text" id="r-name" placeholder="Bill Name">
                 <input type="number" id="r-amount" placeholder="Amount">
                 <input type="date" id="r-date">
-                <div class="flex items-center gap-2 bg-slate-50 p-3 rounded-xl">
-                    <input type="checkbox" id="r-repeat" style="width: auto;">
-                    <label class="text-xs font-bold">Auto-Repeat Every Month</label>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400">SHOW ON DASHBOARD (DAYS BEFORE)</label>
+                    <input type="number" id="r-show-before" placeholder="Days (e.g. 7)" value="7">
                 </div>
-                <button onclick="saveReminder()" class="btn-primary w-full">SAVE</button>
+                <div class="flex items-center gap-2 bg-slate-50 p-3 rounded-xl"><input type="checkbox" id="r-repeat" style="width: auto;"><label class="text-xs font-bold">Monthly Repeat</label></div>
+                <button onclick="saveReminder()" class="btn-primary w-full">SAVE BILL</button>
                 <button onclick="closeModals()" class="w-full text-xs text-gray-400 font-bold py-2">CANCEL</button>
             </div>
-        </div>
-    </div>
-
-    <div id="settle-modal" class="fixed inset-0 bg-black/80 hidden-section flex items-center justify-center p-4 z-[300]">
-        <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-2xl">
-            <div class="text-center border-b pb-4 mb-4">
-                <h2 id="inv-id" class="text-blue-600 font-black text-xs"></h2>
-                <h3 class="text-xl font-black uppercase">Loan Settle</h3>
-            </div>
-            <div class="space-y-3 text-sm mb-6">
-                <div class="flex justify-between"><span>Title:</span> <span id="inv-name" class="font-bold"></span></div>
-                <div class="flex justify-between text-orange-600 border-t pt-2 text-lg font-black"><span>Due:</span> <span id="inv-due"></span></div>
-            </div>
-            <input type="number" id="settle-amt" placeholder="Amount to pay">
-            <button onclick="confirmSettle()" class="btn-primary w-full bg-orange-600 mt-4">CONFIRM</button>
-            <button onclick="closeModals()" class="w-full text-xs text-gray-400 mt-4 font-bold uppercase">Close</button>
         </div>
     </div>
 
@@ -195,29 +137,15 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc, query, orderBy, where, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDC6k-LlYquK8qv_qoG_HuBpgTSLd_Geo8",
-            authDomain: "finance-manager-46f3b.firebaseapp.com",
-            projectId: "finance-manager-46f3b",
-            storageBucket: "finance-manager-46f3b.firebasestorage.app",
-            messagingSenderId: "155610396831",
-            appId: "1:155610396831:web:76633015fd7a28ea7b0aaa"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyDC6k-LlYquK8qv_qoG_HuBpgTSLd_Geo8", authDomain: "finance-manager-46f3b.firebaseapp.com", projectId: "finance-manager-46f3b", storageBucket: "finance-manager-46f3b.firebasestorage.app", messagingSenderId: "155610396831", appId: "1:155610396831:web:76633015fd7a28ea7b0aaa" };
+        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let activeType = '';
-        let targetLoan = null;
-        let allRecords = []; // Store all history locally for instant filtering
+        let activeType = ''; let allRecords = [];
 
         // --- AUTH ---
         window.handleLogin = async () => {
             const e = document.getElementById('user-email').value, p = document.getElementById('user-password').value;
-            if(!e || !p) return alert("Fill fields!");
-            try { await signInWithEmailAndPassword(auth, e, p); } 
-            catch { try { await createUserWithEmailAndPassword(auth, e, p); } catch(err) { alert(err.message); } }
+            try { await signInWithEmailAndPassword(auth, e, p); } catch { try { await createUserWithEmailAndPassword(auth, e, p); } catch(err) { alert(err.message); } }
         };
 
         window.saveProfile = async () => {
@@ -228,147 +156,26 @@
         window.verifyAccess = async () => {
             const p = document.getElementById('login-pin').value;
             const s = await getDoc(doc(db, "users", auth.currentUser.uid));
-            if(s.data().pin === p) { document.getElementById('auth-section').classList.add('hidden-section'); document.getElementById('main-app').classList.remove('hidden-section'); refreshData(); }
-            else alert("Wrong PIN!");
+            if(s.data().pin === p) { document.getElementById('auth-section').classList.add('hidden-section'); document.getElementById('main-app').classList.remove('hidden-section'); refreshData(); } else alert("Wrong PIN!");
         };
 
-        // --- CORE DATA HANDLING ---
-        window.refreshData = async () => {
-            const uid = auth.currentUser.uid;
-            const recSnap = await getDocs(query(collection(db, `users/${uid}/records`), orderBy("createdAt", "desc")));
-            const remSnap = await getDocs(collection(db, `users/${uid}/reminders`));
-            const catSnap = await getDocs(collection(db, `users/${uid}/categories`));
-
-            allRecords = [];
-            let total = 0, incS = 0, expS = 0, lG = 0, lT = 0, remH = '', cats = '<option value="General">General</option>';
-            
-            catSnap.forEach(c => { cats += `<option value="${c.data().name}">${c.data().name}</option>`; });
-            document.getElementById('f-cat').innerHTML = cats;
-
-            recSnap.forEach(s => {
-                const d = s.data();
-                const record = { ...d, id: s.id };
-                allRecords.push(record);
-
-                if(d.type === 'income') { incS += d.amount; total += d.amount; }
-                else if(d.type === 'expense') { expS += d.amount; total -= d.amount; }
-                else if(d.type === 'loan') {
-                    if(d.ltype === 'given') { lG += d.remaining; total -= d.amount; }
-                    else { lT += d.remaining; total += d.amount; }
-                }
-            });
-
-            remSnap.forEach(s => {
-                const r = s.data();
-                remH += `<div class="card p-4 border-l-4 border-blue-500 flex justify-between items-center bg-blue-50/20">
-                    <div><p class="font-bold text-sm">${r.name}</p><p class="text-[10px] text-red-500 font-bold">DUE: ${r.date}</p></div>
-                    <div class="flex gap-2">
-                        <button onclick="payBill('${s.id}', '${r.name}', ${r.amount}, '${r.date}', ${r.repeat})" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-[10px] font-bold">PAID</button>
-                        <button onclick="deleteItem('reminders', '${s.id}')" class="text-red-200 p-2"><i class="fas fa-times"></i></button>
-                    </div>
-                </div>`;
-            });
-
-            document.getElementById('net-balance').innerText = '৳'+total;
-            document.getElementById('sum-inc').innerText = '৳'+incS;
-            document.getElementById('sum-exp').innerText = '৳'+expS;
-            document.getElementById('sum-loan-given').innerText = '৳'+lG;
-            document.getElementById('sum-loan-taken').innerText = '৳'+lT;
-            document.getElementById('dash-rem-list').innerHTML = remH;
-            document.getElementById('full-rem-list').innerHTML = remH || '<p class="text-center text-xs text-gray-400">No active bills.</p>';
-            
-            filterHistory(); // Initial display
-        };
-
-        // --- SEARCH & FILTER LOGIC ---
-        window.filterHistory = () => {
-            const searchTerm = document.getElementById('hist-search-input').value.toLowerCase();
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
-
-            const filtered = allRecords.filter(rec => {
-                const matchesSearch = rec.name.toLowerCase().includes(searchTerm) || rec.category.toLowerCase().includes(searchTerm);
-                let matchesDate = true;
-                if (startDate && rec.date < startDate) matchesDate = false;
-                if (endDate && rec.date > endDate) matchesDate = false;
-                return matchesSearch && matchesDate;
-            });
-
-            renderHistory(filtered);
-        };
-
-        window.renderHistory = (data) => {
-            let html = '';
-            data.forEach(d => {
-                html += `<div class="card p-4 flex justify-between items-center border-l-4 ${d.type==='income'?'border-green-500':d.type==='expense'?'border-red-500':'border-orange-500'}">
-                    <div class="flex-1">
-                        <p class="font-bold text-sm uppercase">${d.name} ${d.loanID ? '<span class="text-blue-600">#'+d.loanID+'</span>':''}</p>
-                        <p class="text-[9px] text-gray-400 font-bold">${d.date} | ${d.category}</p>
-                        ${d.type==='loan' && d.remaining > 0 ? `<p class="text-[10px] font-black text-orange-600">DUE: ৳${d.remaining}</p>` : ''}
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="font-black text-sm">৳${d.amount}</span>
-                        ${d.type==='loan' && d.remaining > 0 ? `<button onclick="openSettlePopupByData('${d.id}')" class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase">Pay</button>` : ''}
-                        <button onclick="deleteItem('records', '${d.id}')" class="text-red-200"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById('history-list').innerHTML = html || '<p class="text-center text-xs text-gray-400 py-10">No records found.</p>';
-        };
-
-        window.clearFilters = () => {
-            document.getElementById('hist-search-input').value = '';
-            document.getElementById('start-date').value = '';
-            document.getElementById('end-date').value = '';
-            filterHistory();
-        };
-
-        // --- ACTIONS ---
+        // --- CORE ---
         window.saveEntry = async () => {
             const n = document.getElementById('f-name').value, a = parseFloat(document.getElementById('f-amount').value), d = document.getElementById('f-date').value;
-            if(!n || !a || !d) return alert("Required fields missing!");
-            const data = { name: n, amount: a, date: d, category: document.getElementById('f-cat').value, note: document.getElementById('f-note').value, type: activeType, createdAt: new Date() };
-            if(activeType === 'loan') {
-                data.ltype = document.querySelector('input[name="ltype"]:checked').value;
-                data.remaining = a;
-                data.loanID = "LN-" + Math.floor(1000 + Math.random() * 9000);
-            }
+            const data = { name: n, amount: a, date: d, category: document.getElementById('f-cat').value, type: activeType, createdAt: new Date() };
+            if(activeType === 'loan') { data.ltype = document.querySelector('input[name="ltype"]:checked').value; data.remaining = a; data.loanID = "LN-"+Math.floor(1000+Math.random()*9000); }
             await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), data);
             closeModals(); refreshData();
         };
 
-        window.searchLoan = async () => {
-            const id = document.getElementById('loan-search').value.trim().toUpperCase();
-            const snap = await getDocs(query(collection(db, `users/${auth.currentUser.uid}/records`), where("loanID", "==", id)));
-            if(snap.empty) return alert("Loan ID not found!");
-            openSettlePopup(snap.docs[0]);
-        };
-
-        window.openSettlePopup = (docSnap) => {
-            targetLoan = docSnap; const d = docSnap.data();
-            document.getElementById('inv-id').innerText = d.loanID;
-            document.getElementById('inv-name').innerText = d.name;
-            document.getElementById('inv-due').innerText = "৳"+d.remaining;
-            document.getElementById('settle-amt').value = d.remaining;
-            document.getElementById('settle-modal').classList.remove('hidden-section');
-        };
-
-        window.confirmSettle = async () => {
-            const pay = parseFloat(document.getElementById('settle-amt').value);
-            const d = targetLoan.data();
-            if(!pay || pay <= 0) return;
-            await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), {
-                name: "Settle: " + d.name, amount: pay, date: new Date().toISOString().split('T')[0],
-                category: "Loan Payment", type: d.ltype === 'given' ? 'income' : 'expense', createdAt: new Date()
-            });
-            await updateDoc(targetLoan.ref, { remaining: increment(-pay) });
+        window.saveReminder = async () => {
+            const n = document.getElementById('r-name').value, a = parseFloat(document.getElementById('r-amount').value), d = document.getElementById('r-date').value, sb = parseInt(document.getElementById('r-show-before').value);
+            await addDoc(collection(db, `users/${auth.currentUser.uid}/reminders`), { name: n, amount: a, date: d, showBefore: sb, repeat: document.getElementById('r-repeat').checked, createdAt: new Date() });
             closeModals(); refreshData();
         };
 
         window.payBill = async (id, name, amt, date, repeat) => {
-            await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), { 
-                name: "Paid Bill: " + name, amount: amt, date: new Date().toISOString().split('T')[0], category: 'Bills', type: 'expense', createdAt: new Date() 
-            });
+            await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), { name: "Paid Bill: "+name, amount: amt, date: new Date().toISOString().split('T')[0], category: 'Bill', type: 'expense', createdAt: new Date() });
             if(repeat) {
                 let d = new Date(date); d.setMonth(d.getMonth() + 1);
                 await updateDoc(doc(db, `users/${auth.currentUser.uid}/reminders`, id), { date: d.toISOString().split('T')[0] });
@@ -376,35 +183,103 @@
             refreshData();
         };
 
-        window.saveReminder = async () => {
-            const n = document.getElementById('r-name').value, a = parseFloat(document.getElementById('r-amount').value), d = document.getElementById('r-date').value;
-            if(!n || !a || !d) return alert("Fill all!");
-            await addDoc(collection(db, `users/${auth.currentUser.uid}/reminders`), { name: n, amount: a, date: d, repeat: document.getElementById('r-repeat').checked, createdAt: new Date() });
-            closeModals(); refreshData();
+        window.refreshData = async () => {
+            const uid = auth.currentUser.uid;
+            const recSnap = await getDocs(query(collection(db, `users/${uid}/records`), orderBy("createdAt", "desc")));
+            const remSnap = await getDocs(collection(db, `users/${uid}/reminders`));
+            
+            allRecords = [];
+            let total = 0, incS = 0, expS = 0, lG = 0, lT = 0, dashRem = '';
+            const today = new Date();
+
+            recSnap.forEach(s => {
+                const d = s.data(); d.id = s.id; allRecords.push(d);
+                if(d.type === 'income') { incS += d.amount; total += d.amount; }
+                else if(d.type === 'expense') { expS += d.amount; total -= d.amount; }
+                else if(d.type === 'loan') { if(d.ltype === 'given') { lG += d.remaining; total -= d.amount; } else { lT += d.remaining; total += d.amount; } }
+            });
+
+            remSnap.forEach(s => {
+                const r = s.data();
+                const billDate = new Date(r.date);
+                const diffTime = billDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if(diffDays <= r.showBefore) {
+                    dashRem += `<div class="card p-4 border-l-4 border-blue-500 flex justify-between items-center bg-blue-50/20">
+                        <div><p class="font-bold text-sm">${r.name}</p><p class="text-[9px] text-red-500 font-bold uppercase">Due in ${diffDays} days (${r.date})</p></div>
+                        <button onclick="payBill('${s.id}', '${r.name}', ${r.amount}, '${r.date}', ${r.repeat})" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-xs font-bold">PAID</button>
+                    </div>`;
+                }
+            });
+
+            document.getElementById('net-balance').innerText = '৳'+total;
+            document.getElementById('sum-inc').innerText = '৳'+incS;
+            document.getElementById('sum-exp').innerText = '৳'+expS;
+            document.getElementById('sum-loan-given').innerText = '৳'+lG;
+            document.getElementById('sum-loan-taken').innerText = '৳'+lT;
+            document.getElementById('dash-rem-list').innerHTML = dashRem || '<p class="text-center text-xs text-gray-400">No bills in duration.</p>';
+            filterHistory(); // Initial monthly filter
         };
 
-        window.openSettlePopupByData = async (id) => { const s = await getDoc(doc(db, `users/${auth.currentUser.uid}/records`, id)); openSettlePopup(s); };
-        window.saveCategory = async () => { const n = document.getElementById('cat-name').value, t = document.getElementById('cat-type').value; if(n) { await addDoc(collection(db, `users/${auth.currentUser.uid}/categories`), { name: n, type: t }); refreshData(); } };
-        window.deleteItem = async (col, id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, `users/${auth.currentUser.uid}/${col}`, id)); refreshData(); } };
+        // --- FILTER LOGIC ---
+        window.filterHistory = () => {
+            const search = document.getElementById('hist-search').value.toLowerCase();
+            const from = document.getElementById('hist-from').value;
+            const to = document.getElementById('hist-to').value;
+            
+            // Default Filter: Current Month
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
 
+            let filtered = allRecords.filter(r => {
+                const matchesSearch = r.name.toLowerCase().includes(search) || r.category.toLowerCase().includes(search);
+                let matchesDate = true;
+                if(from && to) { matchesDate = r.date >= from && r.date <= to; }
+                else if (!from && !to) { matchesDate = r.date >= startOfMonth; } // Default this month
+                return matchesSearch && matchesDate;
+            });
+
+            let hHtml = '';
+            filtered.forEach(d => {
+                hHtml += `<div class="card p-4 flex justify-between items-center border-l-4 ${d.type==='income'?'border-green-500':d.type==='expense'?'border-red-500':'border-orange-500'} mb-2">
+                    <div><p class="font-bold text-sm uppercase">${d.name}</p><p class="text-[9px] text-gray-400 font-bold">${d.date} | ${d.category}</p></div>
+                    <div class="flex items-center gap-2 font-black text-sm">৳${d.amount}<button onclick="deleteItem('records', '${d.id}')" class="text-red-200 ml-2"><i class="fas fa-trash"></i></button></div>
+                </div>`;
+            });
+            document.getElementById('history-list').innerHTML = hHtml || '<p class="text-center text-xs text-gray-400 py-10">No records.</p>';
+        };
+
+        // --- UTILS ---
         window.showSection = (id) => {
-            ['home-section', 'history-section', 'reminder-section', 'category-section'].forEach(s => document.getElementById(s).classList.add('hidden-section'));
+            ['home-section', 'history-section', 'reminder-section'].forEach(s => document.getElementById(s).classList.add('hidden-section'));
             document.getElementById(id).classList.remove('hidden-section');
             document.querySelectorAll('.nav-bar button').forEach(b => b.classList.remove('active-nav'));
             const nId = 'nav-'+id.split('-')[0]; if(document.getElementById(nId)) document.getElementById(nId).classList.add('active-nav');
         };
 
-        window.openEntry = (t) => { activeType=t; document.getElementById('modal-title').innerText = "New "+t; document.getElementById('loan-opt').classList.toggle('hidden-section', t!=='loan'); document.getElementById('entry-modal').classList.remove('hidden-section'); };
-        window.openRemModal = () => document.getElementById('rem-modal').classList.remove('hidden-section');
+        window.openEntry = (t) => { 
+            activeType=t; 
+            document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('modal-title').innerText = "New "+t; 
+            document.getElementById('loan-opt').classList.toggle('hidden-section', t!=='loan'); 
+            document.getElementById('entry-modal').classList.remove('hidden-section'); 
+        };
+        
+        window.openRemModal = () => {
+            document.getElementById('r-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('rem-modal').classList.remove('hidden-section');
+        }
         window.closeModals = () => document.querySelectorAll('.fixed').forEach(m => m.classList.add('hidden-section'));
+        window.deleteItem = async (col, id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, `users/${auth.currentUser.uid}/${col}`, id)); refreshData(); } };
+        window.fullLogout = () => { signOut(auth); location.reload(); };
 
         onAuthStateChanged(auth, async user => {
             if(user) {
                 const s = await getDoc(doc(db, "users", user.uid));
                 if(s.exists()){ 
-                    const u = s.data().username;
-                    document.getElementById('top-user-name').innerText = u; 
-                    document.getElementById('welcome-text').innerText = "Hi, " + u;
+                    document.getElementById('top-user-name').innerText = s.data().username; 
+                    document.getElementById('welcome-text').innerText = "Hi, " + s.data().username;
                     document.getElementById('email-step').classList.add('hidden-section'); 
                     document.getElementById('pin-step').classList.remove('hidden-section'); 
                 } else { 
@@ -413,8 +288,6 @@
                 }
             }
         });
-
-        window.fullLogout = () => { signOut(auth); location.reload(); };
     </script>
 </body>
 </html>
