@@ -20,7 +20,7 @@
 
     <div id="auth-section" class="flex items-center justify-center min-h-screen p-4">
         <div class="card p-8 w-full max-w-md border-t-8 border-blue-600">
-            <h1 class="text-3xl font-black text-center text-blue-600 mb-2 tracking-tighter">MY FINANCE MANAGER</h1>
+            <h1 class="text-3xl font-black text-center text-blue-600 mb-2 tracking-tighter">MY FINANCE MANAGER</h1><br>
             <div id="email-step">
                 <input type="email" id="user-email" placeholder="Gmail Address" class="mb-4">
                 <input type="password" id="user-password" placeholder="Password" class="mb-4">
@@ -32,7 +32,7 @@
                 <button onclick="saveProfile()" class="w-full bg-green-600 text-white p-4 rounded-xl font-bold">START</button>
             </div>
             <div id="pin-step" class="hidden-section text-center">
-                <p id="welcome-text" class="font-bold mb-4 text-lg text-blue-600 italic uppercase"></p>
+                <p id="welcome-text" class="font-bold mb-4 text-lg text-blue-600 uppercase"></p>
                 <input type="password" id="login-pin" placeholder="PIN" class="mb-6 text-center text-3xl tracking-widest border-b-2 border-blue-600 w-1/2 mx-auto outline-none">
                 <button onclick="verifyAccess()" class="btn-primary w-full uppercase">Unlock</button>
             </div>
@@ -57,8 +57,8 @@
             <div class="grid grid-cols-2 gap-3">
                 <div class="card p-4 border-l-4 border-green-500"><p class="text-[9px] text-gray-400 font-bold uppercase">Income</p><p id="sum-inc" class="text-lg font-black text-green-600">৳0</p></div>
                 <div class="card p-4 border-l-4 border-red-500"><p class="text-[9px] text-gray-400 font-bold uppercase">Expense</p><p id="sum-exp" class="text-lg font-black text-red-600">৳0</p></div>
-                <div class="card p-4 border-l-4 border-teal-500"><p class="text-[9px] text-gray-400 font-bold uppercase italic">Receivable</p><p id="sum-loan-given" class="text-lg font-black text-teal-600">৳0</p></div>
-                <div class="card p-4 border-l-4 border-orange-500"><p class="text-[9px] text-gray-400 font-bold uppercase italic">Payable</p><p id="sum-loan-taken" class="text-lg font-black text-orange-500">৳0</p></div>
+                <div class="card p-4 border-l-4 border-teal-500"><p class="text-[9px] text-gray-400 font-bold uppercase">Receivable</p><p id="sum-loan-given" class="text-lg font-black text-teal-600">৳0</p></div>
+                <div class="card p-4 border-l-4 border-orange-500"><p class="text-[9px] text-gray-400 font-bold uppercase">Payable</p><p id="sum-loan-taken" class="text-lg font-black text-orange-500">৳0</p></div>
             </div>
 
             <div class="card p-4 bg-white border-2 border-blue-50">
@@ -147,7 +147,7 @@
     <div id="settle-modal" class="fixed inset-0 bg-black/80 hidden-section flex items-center justify-center p-4 z-[300]">
         <div class="bg-white w-full max-w-sm p-6 rounded-3xl shadow-2xl">
             <div class="text-center border-b pb-4 mb-4">
-                <h2 id="inv-id" class="text-blue-600 font-black text-xs italic"></h2>
+                <h2 id="inv-id" class="text-blue-600 font-black text-xs"></h2>
                 <h3 class="text-xl font-black uppercase">Settle Loan</h3>
             </div>
             <div class="space-y-3 text-sm mb-6">
@@ -359,9 +359,9 @@
                         <p class="font-bold text-sm uppercase mt-1">${d.name} ${d.loanID ? '<span class="text-blue-500">#'+d.loanID+'</span>' : ''}</p>
                         <p class="text-[9px] text-gray-400 font-bold uppercase">${d.date} | ${d.category}</p>
                         
-                        ${d.note ? `<p class="text-[10px] bg-gray-50 p-2 mt-2 rounded border-l-2 border-blue-400 italic text-gray-600"><i class="fas fa-sticky-note mr-1 text-blue-300"></i>${d.note}</p>` : ''}
+                        ${d.note ? `<p class="text-[10px] bg-gray-50 p-2 mt-2 rounded border-l-2 border-blue-400 text-gray-600"><i class="fas fa-sticky-note mr-1 text-blue-300"></i>${d.note}</p>` : ''}
                         
-                        ${d.type==='loan' ? `<p class="text-[10px] font-bold text-slate-500 italic mt-1">${loanStatus}</p>` : ''}
+                        ${d.type==='loan' ? `<p class="text-[10px] font-bold text-slate-500 mt-1">${loanStatus}</p>` : ''}
                         ${d.type==='loan' && d.remaining > 0 ? `<p class="text-[10px] font-black text-orange-600 mt-1">DUE: ৳${d.remaining}</p>` : d.type==='loan' ? '<p class="text-[10px] font-black text-green-600 mt-1">FULLY SETTLED</p>' : ''}
                     </div>
                     <div class="flex justify-between items-center mt-3 pt-2 border-t border-dashed">
@@ -406,4 +406,5 @@
     </script>
 </body>
 </html>
+
 
