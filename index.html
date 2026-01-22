@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Finance Manager - Final Integrated</title>
+    <title>My Finance Manager - Professional Version</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
@@ -73,18 +73,18 @@
                     <p id="sum-exp" class="text-lg font-black text-red-600">৳0</p>
                 </div>
                 <div class="card p-4 border-l-4 border-teal-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">Loan Taking</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">I will get (Pabo)</p>
                     <p id="sum-loan-given" class="text-lg font-black text-teal-600">৳0</p>
                 </div>
                 <div class="card p-4 border-l-4 border-orange-500">
-                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">Loan Given</p>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase italic">I owe (Debo)</p>
                     <p id="sum-loan-taken" class="text-lg font-black text-orange-500">৳0</p>
                 </div>
             </div>
 
             <div class="card p-4 bg-white border-2 border-blue-50">
                 <div class="flex gap-2">
-                    <input type="text" id="loan-search" placeholder="Search Loan ID (LN-XXXX)" class="!p-2 text-sm">
+                    <input type="text" id="loan-search" placeholder="Quick Loan Search ID" class="!p-2 text-sm">
                     <button onclick="searchLoan()" class="bg-blue-600 text-white px-4 rounded-xl"><i class="fas fa-search"></i></button>
                 </div>
             </div>
@@ -95,13 +95,21 @@
                 <button onclick="openEntry('loan')" class="card p-3 text-center text-orange-600"><i class="fas fa-handshake text-xl mb-1"></i><p class="text-[9px] font-bold">LOAN</p></button>
                 <button onclick="openRemModal()" class="card p-3 text-center text-blue-600"><i class="fas fa-bell text-xl mb-1"></i><p class="text-[9px] font-bold">BILL</p></button>
             </div>
-
-            <h3 class="font-black text-xs text-slate-400 uppercase pt-4">Pending Reminders</h3>
             <div id="dash-rem-list" class="space-y-2"></div>
         </div>
 
         <div id="history-section" class="p-4 hidden-section space-y-4">
-            <h2 class="text-xl font-black">Transaction Logs</h2>
+            <h2 class="text-xl font-black">Full History</h2>
+            
+            <div class="card p-4 space-y-3 bg-white border border-blue-100">
+                <input type="text" id="hist-search-input" oninput="filterHistory()" placeholder="Search by name or category..." class="text-sm">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="date" id="start-date" onchange="filterHistory()" class="!p-2 text-xs">
+                    <input type="date" id="end-date" onchange="filterHistory()" class="!p-2 text-xs">
+                </div>
+                <button onclick="clearFilters()" class="text-[10px] font-bold text-blue-600 uppercase w-full text-center">Clear Filters</button>
+            </div>
+
             <div id="history-list" class="space-y-2"></div>
         </div>
 
@@ -121,10 +129,10 @@
         </div>
 
         <nav class="nav-bar shadow-2xl">
-            <button onclick="showSection('home-section')" id="nav-home" class="active-nav px-4 flex flex-col items-center"><i class="fas fa-home text-lg"></i><span class="text-[8px] mt-1">HOME</span></button>
-            <button onclick="showSection('history-section')" id="nav-history" class="px-4 flex flex-col items-center"><i class="fas fa-list-alt text-lg"></i><span class="text-[8px] mt-1">HISTORY</span></button>
-            <button onclick="showSection('reminder-section')" id="nav-reminder" class="px-4 flex flex-col items-center"><i class="fas fa-clock text-lg"></i><span class="text-[8px] mt-1">BILLS</span></button>
-            <button onclick="fullLogout()" class="px-4 text-red-400 flex flex-col items-center"><i class="fas fa-sign-out-alt text-lg"></i><span class="text-[8px] mt-1">LOGOUT</span></button>
+            <button onclick="showSection('home-section')" id="nav-home" class="active-nav px-4 flex flex-col items-center"><i class="fas fa-home text-lg"></i><span class="text-[8px] mt-1 uppercase">Home</span></button>
+            <button onclick="showSection('history-section')" id="nav-history" class="px-4 flex flex-col items-center"><i class="fas fa-list-alt text-lg"></i><span class="text-[8px] mt-1 uppercase">History</span></button>
+            <button onclick="showSection('reminder-section')" id="nav-reminder" class="px-4 flex flex-col items-center"><i class="fas fa-clock text-lg"></i><span class="text-[8px] mt-1 uppercase">Bills</span></button>
+            <button onclick="fullLogout()" class="px-4 text-red-400 flex flex-col items-center"><i class="fas fa-sign-out-alt text-lg"></i><span class="text-[8px] mt-1 uppercase">Logout</span></button>
         </nav>
     </div>
 
@@ -202,8 +210,9 @@
 
         let activeType = '';
         let targetLoan = null;
+        let allRecords = []; // Store all history locally for instant filtering
 
-        // --- AUTH & NAME DISPLAY ---
+        // --- AUTH ---
         window.handleLogin = async () => {
             const e = document.getElementById('user-email').value, p = document.getElementById('user-password').value;
             if(!e || !p) return alert("Fill fields!");
@@ -223,7 +232,98 @@
             else alert("Wrong PIN!");
         };
 
-        // --- TRANSACTION LOGIC ---
+        // --- CORE DATA HANDLING ---
+        window.refreshData = async () => {
+            const uid = auth.currentUser.uid;
+            const recSnap = await getDocs(query(collection(db, `users/${uid}/records`), orderBy("createdAt", "desc")));
+            const remSnap = await getDocs(collection(db, `users/${uid}/reminders`));
+            const catSnap = await getDocs(collection(db, `users/${uid}/categories`));
+
+            allRecords = [];
+            let total = 0, incS = 0, expS = 0, lG = 0, lT = 0, remH = '', cats = '<option value="General">General</option>';
+            
+            catSnap.forEach(c => { cats += `<option value="${c.data().name}">${c.data().name}</option>`; });
+            document.getElementById('f-cat').innerHTML = cats;
+
+            recSnap.forEach(s => {
+                const d = s.data();
+                const record = { ...d, id: s.id };
+                allRecords.push(record);
+
+                if(d.type === 'income') { incS += d.amount; total += d.amount; }
+                else if(d.type === 'expense') { expS += d.amount; total -= d.amount; }
+                else if(d.type === 'loan') {
+                    if(d.ltype === 'given') { lG += d.remaining; total -= d.amount; }
+                    else { lT += d.remaining; total += d.amount; }
+                }
+            });
+
+            remSnap.forEach(s => {
+                const r = s.data();
+                remH += `<div class="card p-4 border-l-4 border-blue-500 flex justify-between items-center bg-blue-50/20">
+                    <div><p class="font-bold text-sm">${r.name}</p><p class="text-[10px] text-red-500 font-bold">DUE: ${r.date}</p></div>
+                    <div class="flex gap-2">
+                        <button onclick="payBill('${s.id}', '${r.name}', ${r.amount}, '${r.date}', ${r.repeat})" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-[10px] font-bold">PAID</button>
+                        <button onclick="deleteItem('reminders', '${s.id}')" class="text-red-200 p-2"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>`;
+            });
+
+            document.getElementById('net-balance').innerText = '৳'+total;
+            document.getElementById('sum-inc').innerText = '৳'+incS;
+            document.getElementById('sum-exp').innerText = '৳'+expS;
+            document.getElementById('sum-loan-given').innerText = '৳'+lG;
+            document.getElementById('sum-loan-taken').innerText = '৳'+lT;
+            document.getElementById('dash-rem-list').innerHTML = remH;
+            document.getElementById('full-rem-list').innerHTML = remH || '<p class="text-center text-xs text-gray-400">No active bills.</p>';
+            
+            filterHistory(); // Initial display
+        };
+
+        // --- SEARCH & FILTER LOGIC ---
+        window.filterHistory = () => {
+            const searchTerm = document.getElementById('hist-search-input').value.toLowerCase();
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            const filtered = allRecords.filter(rec => {
+                const matchesSearch = rec.name.toLowerCase().includes(searchTerm) || rec.category.toLowerCase().includes(searchTerm);
+                let matchesDate = true;
+                if (startDate && rec.date < startDate) matchesDate = false;
+                if (endDate && rec.date > endDate) matchesDate = false;
+                return matchesSearch && matchesDate;
+            });
+
+            renderHistory(filtered);
+        };
+
+        window.renderHistory = (data) => {
+            let html = '';
+            data.forEach(d => {
+                html += `<div class="card p-4 flex justify-between items-center border-l-4 ${d.type==='income'?'border-green-500':d.type==='expense'?'border-red-500':'border-orange-500'}">
+                    <div class="flex-1">
+                        <p class="font-bold text-sm uppercase">${d.name} ${d.loanID ? '<span class="text-blue-600">#'+d.loanID+'</span>':''}</p>
+                        <p class="text-[9px] text-gray-400 font-bold">${d.date} | ${d.category}</p>
+                        ${d.type==='loan' && d.remaining > 0 ? `<p class="text-[10px] font-black text-orange-600">DUE: ৳${d.remaining}</p>` : ''}
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="font-black text-sm">৳${d.amount}</span>
+                        ${d.type==='loan' && d.remaining > 0 ? `<button onclick="openSettlePopupByData('${d.id}')" class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase">Pay</button>` : ''}
+                        <button onclick="deleteItem('records', '${d.id}')" class="text-red-200"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('history-list').innerHTML = html || '<p class="text-center text-xs text-gray-400 py-10">No records found.</p>';
+        };
+
+        window.clearFilters = () => {
+            document.getElementById('hist-search-input').value = '';
+            document.getElementById('start-date').value = '';
+            document.getElementById('end-date').value = '';
+            filterHistory();
+        };
+
+        // --- ACTIONS ---
         window.saveEntry = async () => {
             const n = document.getElementById('f-name').value, a = parseFloat(document.getElementById('f-amount').value), d = document.getElementById('f-date').value;
             if(!n || !a || !d) return alert("Required fields missing!");
@@ -237,7 +337,6 @@
             closeModals(); refreshData();
         };
 
-        // --- LOAN ACTIONS ---
         window.searchLoan = async () => {
             const id = document.getElementById('loan-search').value.trim().toUpperCase();
             const snap = await getDocs(query(collection(db, `users/${auth.currentUser.uid}/records`), where("loanID", "==", id)));
@@ -266,7 +365,6 @@
             closeModals(); refreshData();
         };
 
-        // --- REMINDERS ---
         window.payBill = async (id, name, amt, date, repeat) => {
             await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), { 
                 name: "Paid Bill: " + name, amount: amt, date: new Date().toISOString().split('T')[0], category: 'Bills', type: 'expense', createdAt: new Date() 
@@ -285,61 +383,6 @@
             closeModals(); refreshData();
         };
 
-        // --- CORE DATA HANDLING ---
-        window.refreshData = async () => {
-            const uid = auth.currentUser.uid;
-            const recSnap = await getDocs(query(collection(db, `users/${uid}/records`), orderBy("createdAt", "desc")));
-            const remSnap = await getDocs(collection(db, `users/${uid}/reminders`));
-            const catSnap = await getDocs(collection(db, `users/${uid}/categories`));
-
-            let total = 0, incS = 0, expS = 0, lG = 0, lT = 0, hist = '', remH = '', cats = '<option value="General">General</option>';
-            
-            catSnap.forEach(c => { cats += `<option value="${c.data().name}">${c.data().name}</option>`; });
-            document.getElementById('f-cat').innerHTML = cats;
-
-            recSnap.forEach(s => {
-                const d = s.data();
-                if(d.type === 'income') { incS += d.amount; total += d.amount; }
-                else if(d.type === 'expense') { expS += d.amount; total -= d.amount; }
-                else if(d.type === 'loan') {
-                    if(d.ltype === 'given') { lG += d.remaining; total -= d.amount; }
-                    else { lT += d.remaining; total += d.amount; }
-                }
-                hist += `<div class="card p-4 flex justify-between items-center border-l-4 ${d.type==='income'?'border-green-500':d.type==='expense'?'border-red-500':'border-orange-500'}">
-                    <div class="flex-1">
-                        <p class="font-bold text-sm uppercase">${d.name} ${d.loanID ? '<span class="text-blue-600">#'+d.loanID+'</span>':''}</p>
-                        <p class="text-[9px] text-gray-400 font-bold">${d.date} | ${d.category}</p>
-                        ${d.type==='loan' && d.remaining > 0 ? `<p class="text-[10px] font-black text-orange-600">DUE: ৳${d.remaining}</p>` : ''}
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="font-black text-sm">৳${d.amount}</span>
-                        ${d.type==='loan' && d.remaining > 0 ? `<button onclick="openSettlePopupByData('${s.id}')" class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[10px] font-black">PAY</button>` : ''}
-                        <button onclick="deleteItem('records', '${s.id}')" class="text-red-200"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>`;
-            });
-
-            remSnap.forEach(s => {
-                const r = s.data();
-                remH += `<div class="card p-4 border-l-4 border-blue-500 flex justify-between items-center bg-blue-50/20">
-                    <div><p class="font-bold text-sm">${r.name}</p><p class="text-[10px] text-red-500 font-bold italic">DUE: ${r.date}</p></div>
-                    <div class="flex gap-2">
-                        <button onclick="payBill('${s.id}', '${r.name}', ${r.amount}, '${r.date}', ${r.repeat})" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-[10px] font-bold">PAID</button>
-                        <button onclick="deleteItem('reminders', '${s.id}')" class="text-red-200 p-2"><i class="fas fa-times"></i></button>
-                    </div>
-                </div>`;
-            });
-
-            document.getElementById('net-balance').innerText = '৳'+total;
-            document.getElementById('sum-inc').innerText = '৳'+incS;
-            document.getElementById('sum-exp').innerText = '৳'+expS;
-            document.getElementById('sum-loan-given').innerText = '৳'+lG;
-            document.getElementById('sum-loan-taken').innerText = '৳'+lT;
-            document.getElementById('history-list').innerHTML = hist;
-            document.getElementById('dash-rem-list').innerHTML = remH;
-            document.getElementById('full-rem-list').innerHTML = remH || '<p class="text-center text-xs text-gray-400">No active bills.</p>';
-        };
-
         window.openSettlePopupByData = async (id) => { const s = await getDoc(doc(db, `users/${auth.currentUser.uid}/records`, id)); openSettlePopup(s); };
         window.saveCategory = async () => { const n = document.getElementById('cat-name').value, t = document.getElementById('cat-type').value; if(n) { await addDoc(collection(db, `users/${auth.currentUser.uid}/categories`), { name: n, type: t }); refreshData(); } };
         window.deleteItem = async (col, id) => { if(confirm("Delete?")) { await deleteDoc(doc(db, `users/${auth.currentUser.uid}/${col}`, id)); refreshData(); } };
@@ -355,20 +398,16 @@
         window.openRemModal = () => document.getElementById('rem-modal').classList.remove('hidden-section');
         window.closeModals = () => document.querySelectorAll('.fixed').forEach(m => m.classList.add('hidden-section'));
 
-        // --- AUTH OBSERVER (NAME FETCHING) ---
         onAuthStateChanged(auth, async user => {
             if(user) {
                 const s = await getDoc(doc(db, "users", user.uid));
                 if(s.exists()){ 
-                    const userName = s.data().username;
-                    // এখানে নাম সেট করা হচ্ছে
-                    document.getElementById('top-user-name').innerText = userName; 
-                    document.getElementById('welcome-text').innerText = "Hi, " + userName;
-                    
+                    const u = s.data().username;
+                    document.getElementById('top-user-name').innerText = u; 
+                    document.getElementById('welcome-text').innerText = "Hi, " + u;
                     document.getElementById('email-step').classList.add('hidden-section'); 
                     document.getElementById('pin-step').classList.remove('hidden-section'); 
-                }
-                else { 
+                } else { 
                     document.getElementById('email-step').classList.add('hidden-section'); 
                     document.getElementById('setup-step').classList.remove('hidden-section'); 
                 }
@@ -379,4 +418,3 @@
     </script>
 </body>
 </html>
-
