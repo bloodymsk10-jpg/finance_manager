@@ -81,7 +81,6 @@
 
         <div id="history-section" class="p-4 hidden-section space-y-4">
             <h2 class="text-xl font-black">History</h2>
-            
             <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
                 <button onclick="filterTab('all')" id="tab-all" class="active-tab bg-white px-4 py-2 rounded-full text-[10px] font-bold uppercase shadow-sm border">All</button>
                 <button onclick="filterTab('income')" id="tab-income" class="bg-white px-4 py-2 rounded-full text-[10px] font-bold uppercase shadow-sm border">Income</button>
@@ -113,6 +112,10 @@
                 <button onclick="saveCategory()" class="btn-primary w-full">ADD CATEGORY</button>
             </div>
             <div id="category-list" class="space-y-2"></div>
+        </div>
+
+        <div class="text-center py-6">
+            <p class="text-[10px] font-black text-slate-300 tracking-[5px] uppercase">MADE BY MD. SALMAN</p>
         </div>
 
         <nav class="nav-bar shadow-2xl">
@@ -186,12 +189,10 @@
         let activeType = ''; let allRecords = []; let targetLoan = null;
         let currentFilterTab = 'all';
 
-        // --- UTILS ---
         window.clearForms = () => {
             document.querySelectorAll('input, textarea').forEach(i => { if(i.type !== 'date' && i.type !== 'radio') i.value = ''; });
         };
 
-        // --- AUTH ---
         window.handleLogin = async () => {
             const e = document.getElementById('user-email').value, p = document.getElementById('user-password').value;
             try { await signInWithEmailAndPassword(auth, e, p); } catch { try { await createUserWithEmailAndPassword(auth, e, p); } catch(err) { alert(err.message); } }
@@ -208,7 +209,6 @@
             if(s.data().pin === p) { document.getElementById('auth-section').classList.add('hidden-section'); document.getElementById('main-app').classList.remove('hidden-section'); refreshData(); } else alert("Wrong PIN!");
         };
 
-        // --- RECORDS & LOANS ---
         window.saveEntry = async () => {
             const n = document.getElementById('f-name').value, a = parseFloat(document.getElementById('f-amount').value), d = document.getElementById('f-date').value;
             if(!n || !a || !d) return alert("Missing Info");
@@ -265,7 +265,6 @@
             closeModals(); refreshData();
         };
 
-        // --- BILLS & CATEGORIES ---
         window.saveReminder = async () => {
             const n = document.getElementById('r-name').value, a = parseFloat(document.getElementById('r-amount').value), d = document.getElementById('r-date').value, sb = parseInt(document.getElementById('r-show-before').value);
             await addDoc(collection(db, `users/${auth.currentUser.uid}/reminders`), { name: n, amount: a, date: d, showBefore: sb, repeat: document.getElementById('r-repeat').checked, createdAt: new Date() });
@@ -286,7 +285,6 @@
             if(n) { await addDoc(collection(db, `users/${auth.currentUser.uid}/categories`), { name: n, amount: a, type: t }); clearForms(); refreshData(); } 
         };
 
-        // --- TAB LOGIC ---
         window.filterTab = (tab) => {
             currentFilterTab = tab;
             document.querySelectorAll('#history-section button[id^="tab-"]').forEach(b => b.classList.remove('active-tab'));
@@ -294,7 +292,6 @@
             filterHistory();
         };
 
-        // --- REFRESH & HISTORY ---
         window.refreshData = async () => {
             const uid = auth.currentUser.uid;
             const recSnap = await getDocs(query(collection(db, `users/${uid}/records`), orderBy("createdAt", "desc")));
@@ -362,8 +359,8 @@
                         <p class="font-bold text-sm uppercase mt-1">${d.name} ${d.loanID ? '<span class="text-blue-500">#'+d.loanID+'</span>' : ''}</p>
                         <p class="text-[9px] text-gray-400 font-bold uppercase">${d.date} | ${d.category}</p>
                         
-                        ${d.note ? `<p class="text-[10px] bg-gray-50 p-2 mt-2 rounded border-l-2 border-gray-300 italic text-gray-600"><i class="fas fa-sticky-note mr-1 text-gray-400"></i>${d.note}</p>` : ''}
-
+                        ${d.note ? `<p class="text-[10px] bg-gray-50 p-2 mt-2 rounded border-l-2 border-blue-400 italic text-gray-600"><i class="fas fa-sticky-note mr-1 text-blue-300"></i>${d.note}</p>` : ''}
+                        
                         ${d.type==='loan' ? `<p class="text-[10px] font-bold text-slate-500 italic mt-1">${loanStatus}</p>` : ''}
                         ${d.type==='loan' && d.remaining > 0 ? `<p class="text-[10px] font-black text-orange-600 mt-1">DUE: ৳${d.remaining}</p>` : d.type==='loan' ? '<p class="text-[10px] font-black text-green-600 mt-1">FULLY SETTLED</p>' : ''}
                     </div>
@@ -379,7 +376,6 @@
             document.getElementById('history-list').innerHTML = hHtml || '<p class="text-center text-xs text-gray-400 py-10">No records found.</p>';
         };
 
-        // --- UTILS ---
         window.openSettlePopupByID = async (id) => { const s = await getDoc(doc(db, `users/${auth.currentUser.uid}/records`, id)); openSettlePopup(s); };
         window.deleteItem = async (col, id) => { if(confirm("Delete Permanently?")) { await deleteDoc(doc(db, `users/${auth.currentUser.uid}/${col}`, id)); refreshData(); } };
         window.showSection = (id) => {
