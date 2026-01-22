@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login-page" class="page">
+        <div class="card center">
+            <h1>💰 Smart Finance</h1>
+            <button id="googleLogin" class="btn-white">Login with Google</button>
+        </div>
+    </div>
+
+    <div id="unlock-page" class="page" style="display:none;">
+        <div class="card center">
+            <h2>Enter PIN</h2>
+            <input type="password" id="pinInput" maxlength="4" placeholder="****">
+            <button id="unlockBtn" class="btn-primary">Unlock</button>
+        </div>
+    </div>
+
+    <div id="main-app" class="page" style="display:none;">
+        <div class="dashboard card">
+            <h2>Balance: ৳ <span id="balanceText">0</span></h2>
+            <p>Income: ৳<span id="incTotal">0</span> | Expense: ৳<span id="expTotal">0</span></p>
+        </div>
+        
+        <div class="inputs card">
+            <input type="number" id="amt" placeholder="Amount">
+            <input type="text" id="note" placeholder="Note">
+            <button onclick="saveData('income')" class="btn-primary">Add Income</button>
+            <button onclick="saveData('expense')" class="btn-danger">Add Expense</button>
+        </div>
+
+        <div id="history" class="card">
+            <h3>Recent History</h3>
+            <ul id="historyList"></ul>
+        </div>
+
+        <button id="logoutBtn" class="btn-small">Logout</button>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
