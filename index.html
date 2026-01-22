@@ -176,6 +176,15 @@
 
         let activeType = ''; let allRecords = []; let targetLoan = null;
 
+        // --- UTILS: Clear Forms ---
+        window.clearForms = () => {
+            document.getElementById('f-name').value = '';
+            document.getElementById('f-amount').value = '';
+            document.getElementById('f-note').value = '';
+            document.getElementById('r-name').value = '';
+            document.getElementById('r-amount').value = '';
+        };
+
         // --- AUTH ---
         window.handleLogin = async () => {
             const e = document.getElementById('user-email').value, p = document.getElementById('user-password').value;
@@ -200,6 +209,7 @@
             const data = { name: n, amount: a, date: d, category: document.getElementById('f-cat').value, note: document.getElementById('f-note').value, type: activeType, createdAt: new Date() };
             if(activeType === 'loan') { data.ltype = document.querySelector('input[name="ltype"]:checked').value; data.remaining = a; data.loanID = "LN-"+Math.floor(1000+Math.random()*9000); }
             await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), data);
+            clearForms(); // Clear inputs
             closeModals(); refreshData();
         };
 
@@ -232,6 +242,7 @@
         window.saveReminder = async () => {
             const n = document.getElementById('r-name').value, a = parseFloat(document.getElementById('r-amount').value), d = document.getElementById('r-date').value, sb = parseInt(document.getElementById('r-show-before').value);
             await addDoc(collection(db, `users/${auth.currentUser.uid}/reminders`), { name: n, amount: a, date: d, showBefore: sb, repeat: document.getElementById('r-repeat').checked, createdAt: new Date() });
+            clearForms(); // Clear inputs
             closeModals(); refreshData();
         };
 
@@ -352,4 +363,3 @@
     </script>
 </body>
 </html>
-
