@@ -13,6 +13,8 @@
         input, select, textarea { border: 1.5px solid #e2e8f0; padding: 12px; border-radius: 12px; width: 100%; outline: none; font-size: 14px; }
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #eee; z-index: 1000; }
         .btn-primary { background: #2563eb; color: white; font-weight: bold; border-radius: 12px; padding: 12px; transition: 0.2s; }
+        .tab-btn { padding: 8px 16px; font-size: 12px; font-weight: bold; border-radius: 10px; background: #f1f5f9; color: #64748b; }
+        .tab-btn.active { background: #2563eb; color: white; }
     </style>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800">
@@ -74,20 +76,28 @@
                 <button onclick="openRemModal()" class="card p-3 text-center text-blue-600"><i class="fas fa-bell text-xl mb-1"></i><p class="text-[9px] font-bold">BILL</p></button>
             </div>
 
-            <h3 class="font-black text-xs text-slate-400 uppercase pt-4">Bills to Pay</h3>
+            <h3 class="font-black text-xs text-slate-400 uppercase pt-4">Upcoming Bills</h3>
             <div id="dash-rem-list" class="space-y-2"></div>
         </div>
 
         <div id="history-section" class="p-4 hidden-section space-y-4">
-            <h2 class="text-xl font-black">Full History</h2>
+            <h2 class="text-xl font-black">History</h2>
+            
+            <div class="flex gap-2 overflow-x-auto pb-2">
+                <button onclick="setHistoryTab('all')" id="tab-all" class="tab-btn active text-nowrap">ALL</button>
+                <button onclick="setHistoryTab('income')" id="tab-income" class="tab-btn text-nowrap text-green-600">INCOME</button>
+                <button onclick="setHistoryTab('expense')" id="tab-expense" class="tab-btn text-nowrap text-red-600">EXPENSE</button>
+                <button onclick="setHistoryTab('loan')" id="tab-loan" class="tab-btn text-nowrap text-orange-600">LOANS (DUE)</button>
+            </div>
+
             <div class="card p-4 space-y-3 bg-blue-50/30">
-                <input type="text" id="hist-search" oninput="filterHistory()" placeholder="Search name or category...">
+                <input type="text" id="hist-search" oninput="filterHistory()" placeholder="Search name...">
                 <div class="grid grid-cols-2 gap-2">
                     <input type="date" id="hist-from" onchange="filterHistory()">
                     <input type="date" id="hist-to" onchange="filterHistory()">
                 </div>
-                <p id="filter-msg" class="text-[10px] text-blue-600 font-bold text-center italic">Showing only this month's data by default</p>
             </div>
+            
             <div id="history-list" class="space-y-2"></div>
         </div>
 
@@ -153,7 +163,7 @@
         <div class="bg-white w-full max-w-sm p-6 rounded-3xl">
             <h3 class="font-black mb-6 text-blue-600 uppercase">New Bill Reminder</h3>
             <div class="space-y-4">
-                <input type="text" id="r-name" placeholder="Bill Title (e.g. WiFi Bill)">
+                <input type="text" id="r-name" placeholder="Bill Title">
                 <input type="number" id="r-amount" placeholder="Amount">
                 <input type="date" id="r-date">
                 <div>
@@ -176,19 +186,24 @@
         const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
         let activeType = ''; let allRecords = []; let targetLoan = null;
+        let currentHistoryTab = 'all';
 
-        // --- UTILS: Clear Forms ---
+        // --- UTILS ---
         window.clearForms = () => {
-            document.getElementById('f-name').value = '';
-            document.getElementById('f-amount').value = '';
-            document.getElementById('f-note').value = '';
-            document.getElementById('r-name').value = '';
-            document.getElementById('r-amount').value = '';
-            document.getElementById('cat-name').value = '';
-            document.getElementById('cat-amount').value = '';
+            ['f-name','f-amount','f-note','r-name','r-amount','cat-name','cat-amount'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.value = '';
+            });
         };
 
-        // --- AUTH ---
+        window.setHistoryTab = (tab) => {
+            currentHistoryTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-'+tab).classList.add('active');
+            filterHistory();
+        };
+
+        // --- AUTH & CORE ---
         window.handleLogin = async () => {
             const e = document.getElementById('user-email').value, p = document.getElementById('user-password').value;
             try { await signInWithEmailAndPassword(auth, e, p); } catch { try { await createUserWithEmailAndPassword(auth, e, p); } catch(err) { alert(err.message); } }
@@ -202,45 +217,39 @@
         window.verifyAccess = async () => {
             const p = document.getElementById('login-pin').value;
             const s = await getDoc(doc(db, "users", auth.currentUser.uid));
-            if(s.data().pin === p) { document.getElementById('auth-section').classList.add('hidden-section'); document.getElementById('main-app').classList.remove('hidden-section'); refreshData(); } else alert("Wrong PIN!");
+            if(s.data().pin === p) { 
+                document.getElementById('auth-section').classList.add('hidden-section'); 
+                document.getElementById('main-app').classList.remove('hidden-section'); 
+                refreshData(); 
+            } else alert("Wrong PIN!");
         };
 
-        // --- ENTRY & LOAN ---
+        // --- DATA OPERATIONS ---
         window.saveEntry = async () => {
             const n = document.getElementById('f-name').value, a = parseFloat(document.getElementById('f-amount').value), d = document.getElementById('f-date').value;
             if(!n || !a || !d) return alert("Missing Info");
             const data = { name: n, amount: a, date: d, category: document.getElementById('f-cat').value, note: document.getElementById('f-note').value, type: activeType, createdAt: new Date() };
-            if(activeType === 'loan') { data.ltype = document.querySelector('input[name="ltype"]:checked').value; data.remaining = a; data.loanID = "LN-"+Math.floor(1000+Math.random()*9000); }
+            if(activeType === 'loan') { 
+                data.ltype = document.querySelector('input[name="ltype"]:checked').value; 
+                data.remaining = a; 
+                data.loanID = "LN-"+Math.floor(1000+Math.random()*9000); 
+            }
             await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), data);
             clearForms(); closeModals(); refreshData();
-        };
-
-        window.searchLoan = async () => {
-            const id = document.getElementById('loan-search').value.trim().toUpperCase();
-            const snap = await getDocs(query(collection(db, `users/${auth.currentUser.uid}/records`), where("loanID", "==", id)));
-            if(snap.empty) return alert("Loan ID not found!");
-            openSettlePopup(snap.docs[0]);
-        };
-
-        window.openSettlePopup = (docSnap) => {
-            targetLoan = docSnap; const d = docSnap.data();
-            document.getElementById('inv-id').innerText = d.loanID;
-            document.getElementById('inv-name').innerText = d.name;
-            document.getElementById('inv-due').innerText = "৳"+d.remaining;
-            document.getElementById('settle-amt').value = d.remaining;
-            document.getElementById('settle-modal').classList.remove('hidden-section');
         };
 
         window.confirmSettle = async () => {
             const pay = parseFloat(document.getElementById('settle-amt').value);
             const d = targetLoan.data();
             if(!pay || pay <= 0) return;
-            await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), { name: "Loan Pay: "+d.name, amount: pay, date: new Date().toISOString().split('T')[0], category: 'Loan Settlement', type: d.ltype === 'given' ? 'income' : 'expense', createdAt: new Date() });
+            await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), { 
+                name: "Loan Pay: "+d.name, amount: pay, date: new Date().toISOString().split('T')[0], 
+                category: 'Loan Settlement', type: d.ltype === 'given' ? 'income' : 'expense', createdAt: new Date() 
+            });
             await updateDoc(targetLoan.ref, { remaining: increment(-pay) });
             closeModals(); refreshData();
         };
 
-        // --- BILLS ---
         window.saveReminder = async () => {
             const n = document.getElementById('r-name').value, a = parseFloat(document.getElementById('r-amount').value), d = document.getElementById('r-date').value, sb = parseInt(document.getElementById('r-show-before').value);
             await addDoc(collection(db, `users/${auth.currentUser.uid}/reminders`), { name: n, amount: a, date: d, showBefore: sb, repeat: document.getElementById('r-repeat').checked, createdAt: new Date() });
@@ -256,7 +265,7 @@
             refreshData();
         };
 
-        // --- REFRESH DATA ---
+        // --- REFRESH & UI ---
         window.refreshData = async () => {
             const uid = auth.currentUser.uid;
             const recSnap = await getDocs(query(collection(db, `users/${uid}/records`), orderBy("createdAt", "desc")));
@@ -267,36 +276,32 @@
             let dashRem = '', fullRem = '', catHtml = '', cats = '<option value="General">General</option>';
             const today = new Date();
 
-            // Categories
             catSnap.forEach(c => { 
-                const cd = c.data();
-                cats += `<option value="${cd.name}">${cd.name}</option>`;
+                const cd = c.data(); cats += `<option value="${cd.name}">${cd.name}</option>`;
                 catHtml += `<div class="card p-4 flex justify-between items-center bg-white border-l-4 border-blue-400">
-                    <div><p class="font-bold text-sm uppercase">${cd.name} <span class="text-[10px] text-gray-400">(${cd.type})</span></p><p class="text-xs font-black text-blue-600">Limit: ৳${cd.amount || 0}</p></div>
+                    <div><p class="font-bold text-sm uppercase">${cd.name}</p><p class="text-xs font-black text-blue-600">Budget: ৳${cd.amount || 0}</p></div>
                     <button onclick="deleteItem('categories', '${c.id}')" class="text-red-300"><i class="fas fa-trash"></i></button>
                 </div>`;
             });
             document.getElementById('f-cat').innerHTML = cats;
-            document.getElementById('category-list').innerHTML = catHtml || '<p class="text-center text-xs text-gray-400 py-4">No categories added.</p>';
+            document.getElementById('category-list').innerHTML = catHtml;
 
-            // Records logic
             recSnap.forEach(s => {
                 const d = s.data(); d.id = s.id; allRecords.push(d);
                 if(d.type === 'income') { incS += d.amount; total += d.amount; }
                 else if(d.type === 'expense') { expS += d.amount; total -= d.amount; }
-                else if(d.type === 'loan') { if(d.ltype === 'given') { lG += d.remaining; total -= d.amount; } else { lT += d.remaining; total += d.amount; } }
+                else if(d.type === 'loan') { 
+                    if(d.ltype === 'given') { lG += d.remaining; total -= d.amount; } 
+                    else { lT += d.remaining; total += d.amount; } 
+                }
             });
 
-            // Reminders logic
             remSnap.forEach(s => {
                 const r = s.data(); const diffDays = Math.ceil((new Date(r.date) - today) / (1000 * 60 * 60 * 24));
-                const itemHtml = `<div class="card p-4 border-l-4 border-blue-500 flex justify-between items-center bg-blue-50/20">
-                        <div><p class="font-bold text-sm uppercase">${r.name}</p><p class="text-[9px] ${diffDays <= 3 ? 'text-red-500':'text-gray-400'} font-bold uppercase">Due: ${r.date} (${diffDays} days left)</p></div>
-                        <div class="flex gap-2">
-                             <button onclick="payBill('${s.id}', '${r.name}', ${r.amount}, '${r.date}', ${r.repeat})" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold">PAID</button>
-                             <button onclick="deleteItem('reminders', '${s.id}')" class="text-red-300"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>`;
+                const itemHtml = `<div class="card p-4 border-l-4 border-blue-500 flex justify-between items-center">
+                    <div><p class="font-bold text-sm uppercase">${r.name}</p><p class="text-[9px] text-gray-400">Due: ${r.date}</p></div>
+                    <button onclick="payBill('${s.id}', '${r.name}', ${r.amount}, '${r.date}', ${r.repeat})" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold">PAID</button>
+                </div>`;
                 if(diffDays <= r.showBefore) dashRem += itemHtml;
                 fullRem += itemHtml;
             });
@@ -306,8 +311,8 @@
             document.getElementById('sum-exp').innerText = '৳'+expS;
             document.getElementById('sum-loan-given').innerText = '৳'+lG;
             document.getElementById('sum-loan-taken').innerText = '৳'+lT;
-            document.getElementById('dash-rem-list').innerHTML = dashRem || '<p class="text-center text-xs text-gray-400 py-4 italic">No upcoming bills.</p>';
-            document.getElementById('full-rem-list').innerHTML = fullRem || '<p class="text-center text-xs text-gray-400 py-10 italic">No bill reminders set.</p>';
+            document.getElementById('dash-rem-list').innerHTML = dashRem || '<p class="text-xs text-gray-400 italic">No upcoming bills.</p>';
+            document.getElementById('full-rem-list').innerHTML = fullRem;
             filterHistory();
         };
 
@@ -315,26 +320,34 @@
             const search = document.getElementById('hist-search').value.toLowerCase();
             const from = document.getElementById('hist-from').value;
             const to = document.getElementById('hist-to').value;
-            const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
 
             let filtered = allRecords.filter(r => {
-                const matchesSearch = r.name.toLowerCase().includes(search) || r.category.toLowerCase().includes(search);
-                let matchesDate = from && to ? (r.date >= from && r.date <= to) : (!from && !to ? r.date >= startOfMonth : true);
-                return matchesSearch && matchesDate;
+                const matchesSearch = r.name.toLowerCase().includes(search);
+                const matchesDate = from && to ? (r.date >= from && r.date <= to) : true;
+                
+                // Tab filtering
+                let matchesTab = true;
+                if(currentHistoryTab === 'income') matchesTab = (r.type === 'income');
+                else if(currentHistoryTab === 'expense') matchesTab = (r.type === 'expense');
+                else if(currentHistoryTab === 'loan') matchesTab = (r.type === 'loan' && r.remaining > 0);
+
+                return matchesSearch && matchesDate && matchesTab;
             });
 
             let hHtml = '';
             filtered.forEach(d => {
+                const isLoan = d.type === 'loan';
+                const loanLabel = isLoan ? (d.ltype === 'given' ? 'GIVEN' : 'TAKEN') : '';
+                
                 hHtml += `<div class="card p-4 flex justify-between items-center border-l-4 ${d.type==='income'?'border-green-500':d.type==='expense'?'border-red-500':'border-orange-500'} mb-2">
                     <div class="flex-1">
-                        <p class="font-bold text-sm uppercase">${d.name} ${d.loanID ? '<span class="text-blue-500">#'+d.loanID+'</span>' : ''}</p>
+                        <p class="font-bold text-sm uppercase">${d.name} ${isLoan ? `<span class="text-[9px] bg-orange-100 text-orange-600 px-1 rounded">${loanLabel}</span>` : ''}</p>
                         <p class="text-[9px] text-gray-400 font-bold uppercase">${d.date} | ${d.category}</p>
-                        ${d.note ? `<p class="text-[10px] text-blue-400 italic font-medium">Note: ${d.note}</p>` : ''}
-                        ${d.type==='loan' && d.remaining > 0 ? `<p class="text-[10px] font-black text-orange-600">DUE: ৳${d.remaining}</p>` : ''}
+                        ${isLoan && d.remaining > 0 ? `<p class="text-[10px] font-black text-orange-600 mt-1">DUE: ৳${d.remaining} <span class="text-gray-400 font-normal">#${d.loanID}</span></p>` : ''}
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="font-black text-sm">৳${d.amount}</span>
-                        ${d.type==='loan' && d.remaining > 0 ? `<button onclick="openSettlePopupByID('${d.id}')" class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[10px] font-black">PAY</button>` : ''}
+                        ${isLoan && d.remaining > 0 ? `<button onclick="openSettlePopupByID('${d.id}')" class="bg-orange-600 text-white px-3 py-1 rounded-lg text-[10px] font-black">PAY</button>` : ''}
                         <button onclick="deleteItem('records', '${d.id}')" class="text-red-200 ml-2"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`;
@@ -342,16 +355,19 @@
             document.getElementById('history-list').innerHTML = hHtml || '<p class="text-center text-xs text-gray-400 py-10">No records found.</p>';
         };
 
-        // --- UTILS ---
+        // --- HANDLERS ---
         window.openSettlePopupByID = async (id) => { const s = await getDoc(doc(db, `users/${auth.currentUser.uid}/records`, id)); openSettlePopup(s); };
+        window.openSettlePopup = (docSnap) => {
+            targetLoan = docSnap; const d = docSnap.data();
+            document.getElementById('inv-id').innerText = d.loanID;
+            document.getElementById('inv-name').innerText = d.name;
+            document.getElementById('inv-due').innerText = "৳"+d.remaining;
+            document.getElementById('settle-amt').value = d.remaining;
+            document.getElementById('settle-modal').classList.remove('hidden-section');
+        };
         window.saveCategory = async () => { 
-            const n = document.getElementById('cat-name').value, 
-                  a = parseFloat(document.getElementById('cat-amount').value || 0),
-                  t = document.getElementById('cat-type').value; 
-            if(n) { 
-                await addDoc(collection(db, `users/${auth.currentUser.uid}/categories`), { name: n, amount: a, type: t }); 
-                clearForms(); refreshData(); 
-            } 
+            const n = document.getElementById('cat-name').value, a = parseFloat(document.getElementById('cat-amount').value || 0), t = document.getElementById('cat-type').value; 
+            if(n) { await addDoc(collection(db, `users/${auth.currentUser.uid}/categories`), { name: n, amount: a, type: t }); clearForms(); refreshData(); } 
         };
         window.deleteItem = async (col, id) => { if(confirm("Delete Permanently?")) { await deleteDoc(doc(db, `users/${auth.currentUser.uid}/${col}`, id)); refreshData(); } };
         window.showSection = (id) => {
