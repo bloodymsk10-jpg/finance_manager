@@ -3,14 +3,15 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signO
 import { getFirestore, doc, getDoc, setDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // ফায়ারবেস কনফিগ (আপনার দেওয়া)
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDOJs4b_RHaMoa3jThKClD9iX_D2MXcRJ0",
-  authDomain: "my-finance-app-10a12.firebaseapp.com",
-  projectId: "my-finance-app-10a12",
-  storageBucket: "my-finance-app-10a12.firebasestorage.app",
-  messagingSenderId: "498227535942",
-  appId: "1:498227535942:web:9fc66a6973acbe0dd4aa47",
-  measurementId: "G-BCKF9HH4P4"
+  apiKey: "AIzaSyDC6k-LlYquK8qv_qoG_HuBpgTSLd_Geo8",
+  authDomain: "finance-manager-46f3b.firebaseapp.com",
+  projectId: "finance-manager-46f3b",
+  storageBucket: "finance-manager-46f3b.firebasestorage.app",
+  messagingSenderId: "155610396831",
+  appId: "1:155610396831:web:76633015fd7a28ea7b0aaa",
+  measurementId: "G-JL2VGQEDPM"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -125,3 +126,4 @@ function showPage(id) {
 }
 
 document.getElementById("logoutBtn").onclick = () => signOut(auth).then(() => location.reload());
+
