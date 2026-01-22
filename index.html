@@ -3,210 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Master Pro - Salman</title>
+    <title>Finance Master - MD. SALMAN</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
         .hidden-section { display: none !important; }
-        .card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #f3f4f6; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: 10px; background: #f9fafb; font-size: 14px; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: #2563eb; background: #fff; }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #94a3b8; padding: 8px; border-radius: 8px; }
-        .active-nav { color: #2563eb; background: #eff6ff; font-weight: bold; }
-        .chip { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade { animation: fadeIn 0.3s ease-out forwards; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        input, select, textarea { border: 1px solid #ddd; padding: 12px; border-radius: 8px; width: 100%; outline-color: #2563eb; font-size: 14px; background: #fff; }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #94a3b8; transition: 0.3s; }
+        .active-nav { color: #2563eb !important; font-weight: bold; }
+        .warning-red { color: #ef4444; font-weight: bold; border: 1px solid #fee2e2; background: #fef2f2; }
     </style>
 </head>
-<body class="bg-gray-50 font-sans text-slate-800">
+<body class="bg-gray-50 font-sans text-gray-800">
 
-    <div id="auth-section" class="flex items-center justify-center min-h-screen p-4 bg-white">
-        <div class="w-full max-w-md text-center animate-fade">
-            <div class="bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-blue-200 shadow-xl">
-                <i class="fas fa-wallet text-white text-3xl"></i>
-            </div>
-            <h1 class="text-2xl font-black text-slate-800 mb-1">FINANCE MASTER</h1>
-            <p class="text-gray-400 text-xs mb-8 uppercase tracking-widest">Developed by Md. Salman</p>
+    <div id="auth-section" class="flex items-center justify-center min-h-screen p-4">
+        <div class="card p-8 w-full max-w-md border-t-4 border-blue-600">
+            <h1 class="text-2xl font-black text-center mb-2 text-blue-600 uppercase tracking-tighter">Finance Manager</h1>
+            <p class="text-center text-gray-400 text-xs mb-8">Developed by Md. Salman</p>
             
             <div id="email-login-step">
-                <input type="email" id="user-email" placeholder="Gmail Address" class="mb-3">
-                <input type="password" id="user-password" placeholder="Password" class="mb-6">
-                <button onclick="handleAuth()" id="auth-btn" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg">Login / Register</button>
+                <input type="email" id="user-email" placeholder="Gmail Address" class="mb-4">
+                <input type="password" id="user-password" placeholder="Password" class="mb-4">
+                <button onclick="handleGmailLogin()" id="login-btn" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-200">VERIFY & LOGIN</button>
             </div>
 
             <div id="setup-step" class="hidden-section">
-                <div class="bg-green-50 text-green-600 p-3 rounded-lg mb-4 text-xs font-bold">Verification Successful!</div>
-                <input type="text" id="setup-username" placeholder="Enter Your Name" class="mb-3">
-                <input type="password" id="setup-pin" maxlength="4" placeholder="Set 4-Digit PIN" class="mb-6 text-center text-xl tracking-widest">
-                <button onclick="saveProfile()" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold shadow-lg">Save Profile</button>
+                <p class="text-green-600 mb-4 text-center font-bold">Registration Successful!</p>
+                <input type="text" id="setup-username" placeholder="Choose Username" class="mb-4">
+                <input type="password" id="setup-pin" placeholder="Set App PIN (Any Length)" class="mb-4 text-center text-xl tracking-widest">
+                <button onclick="saveUserProfile()" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold">COMPLETE SETUP</button>
             </div>
 
-            <div id="pin-step" class="hidden-section">
-                <p id="welcome-msg" class="text-lg font-bold text-gray-700 mb-6"></p>
-                <input type="password" id="login-pin" maxlength="4" placeholder="••••" class="mb-6 text-center text-3xl tracking-[1rem] bg-transparent border-b-2 border-t-0 border-x-0 rounded-none focus:ring-0">
-                <button onclick="verifyPin()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg">UNLOCK WALLET</button>
-                <button onclick="fullLogout()" class="mt-6 text-red-400 text-xs font-bold">SWITCH ACCOUNT</button>
+            <div id="pin-step" class="hidden-section text-center">
+                <div class="text-blue-500 text-6xl mb-4"><i class="fas fa-unlock-alt"></i></div>
+                <p id="welcome-back" class="text-lg font-bold mb-4"></p>
+                <input type="password" id="login-pin" placeholder="Enter PIN" class="mb-6 text-center text-3xl tracking-[0.5rem]">
+                <button onclick="verifyPin()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg">UNLOCK ACCESS</button>
+                <button onclick="fullLogout()" class="mt-8 text-xs text-red-500 underline uppercase tracking-widest">Full Logout</button>
             </div>
         </div>
     </div>
 
-    <div id="main-app" class="hidden-section pb-24 animate-fade">
-        <header class="bg-white/80 backdrop-blur-md border-b sticky top-0 z-40 px-4 py-3 flex justify-between items-center">
+    <div id="main-app" class="hidden-section pb-28">
+        <header class="bg-white border-b p-4 sticky top-0 flex justify-between items-center z-50">
             <div class="flex items-center gap-2">
-                <div class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-xs"><i class="fas fa-chart-pie"></i></div>
-                <span class="font-bold text-slate-800 tracking-tight">DASHBOARD</span>
+                <div class="bg-blue-600 text-white p-2 rounded-lg text-xs"><i class="fas fa-wallet"></i></div>
+                <span class="font-black text-gray-800 tracking-tight">SALMAN WALLET</span>
             </div>
-            <button onclick="showSection('settings-section')" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"><i class="fas fa-cog"></i></button>
+            <button onclick="showSection('settings-section')" class="p-2 text-gray-400"><i class="fas fa-cog"></i></button>
         </header>
 
         <div id="home-section" class="p-4 space-y-4">
-            <div class="card p-6 bg-gradient-to-r from-slate-800 to-slate-900 text-white border-none relative overflow-hidden">
-                <div class="absolute right-0 top-0 opacity-10 transform translate-x-2 -translate-y-2"><i class="fas fa-wallet text-9xl"></i></div>
-                <p class="text-xs text-gray-400 font-medium">Net Available Balance</p>
-                <h2 id="total-net" class="text-4xl font-bold mt-1 tracking-tight">৳0.00</h2>
-                <div class="mt-4 flex gap-2">
-                    <div class="bg-white/10 px-3 py-1 rounded text-[10px]">Income: <span id="total-inc" class="text-green-400 font-bold">৳0</span></div>
-                    <div class="bg-white/10 px-3 py-1 rounded text-[10px]">Expense: <span id="total-exp" class="text-red-400 font-bold">৳0</span></div>
-                </div>
-            </div>
-
-            <div id="reminder-box" class="hidden-section space-y-2">
-                <h3 class="text-xs font-bold text-gray-400 uppercase ml-1">Bill Reminders</h3>
-                <div id="reminder-list"></div>
-            </div>
-
             <div class="grid grid-cols-2 gap-3">
-                <div class="card p-4 border-l-4 border-orange-500">
-                    <p class="text-[10px] text-gray-400 uppercase font-bold">Loan Given</p>
-                    <p id="total-lg" class="text-lg font-bold text-slate-700">৳0</p>
-                </div>
-                <div class="card p-4 border-l-4 border-blue-500">
-                    <p class="text-[10px] text-gray-400 uppercase font-bold">Loan Taken</p>
-                    <p id="total-lt" class="text-lg font-bold text-slate-700">৳0</p>
-                </div>
+                <div class="card p-4"><p class="text-[10px] text-gray-400 uppercase">Income</p><p id="sum-inc" class="text-lg font-bold text-green-600">৳0</p></div>
+                <div class="card p-4"><p class="text-[10px] text-gray-400 uppercase">Expense</p><p id="sum-exp" class="text-lg font-bold text-red-600">৳0</p></div>
+                <div class="card p-4"><p class="text-[10px] text-gray-400 uppercase">Loan Given</p><p id="sum-lg" class="text-lg font-bold text-orange-500">৳0</p></div>
+                <div class="card p-4"><p class="text-[10px] text-gray-400 uppercase">Loan Taken</p><p id="sum-lt" class="text-lg font-bold text-blue-600">৳0</p></div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3 mt-2">
-                <button onclick="openModal('income')" class="bg-green-50 text-green-600 p-3 rounded-2xl font-bold text-xs flex flex-col items-center gap-1 border border-green-100 hover:bg-green-100"><i class="fas fa-arrow-down"></i> INCOME</button>
-                <button onclick="openModal('expense')" class="bg-red-50 text-red-600 p-3 rounded-2xl font-bold text-xs flex flex-col items-center gap-1 border border-red-100 hover:bg-red-100"><i class="fas fa-arrow-up"></i> EXPENSE</button>
-                <button onclick="openModal('loan')" class="bg-orange-50 text-orange-600 p-3 rounded-2xl font-bold text-xs flex flex-col items-center gap-1 border border-orange-100 hover:bg-orange-100"><i class="fas fa-handshake"></i> LOAN</button>
+            <div class="card p-6 bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+                <p class="text-xs opacity-70">Current Net Balance</p>
+                <p id="sum-net" class="text-4xl font-black mt-1">৳0</p>
+            </div>
+
+            <div id="reminder-section" class="hidden-section">
+                <h3 class="text-sm font-bold text-gray-500 mb-2 uppercase tracking-widest px-1">Upcoming Reminders</h3>
+                <div id="reminder-list" class="space-y-2"></div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 py-2">
+                <button onclick="openEntryModal('income')" class="card p-3 text-[10px] font-bold text-green-600 border-b-2 border-green-500"><i class="fas fa-plus block mb-1 text-base"></i>INCOME</button>
+                <button onclick="openEntryModal('expense')" class="card p-3 text-[10px] font-bold text-red-600 border-b-2 border-red-500"><i class="fas fa-minus block mb-1 text-base"></i>EXPENSE</button>
+                <button onclick="openEntryModal('loan')" class="card p-3 text-[10px] font-bold text-orange-600 border-b-2 border-orange-500"><i class="fas fa-handshake block mb-1 text-base"></i>LOAN</button>
             </div>
         </div>
 
         <div id="loan-section" class="p-4 hidden-section space-y-4">
-            <div class="card p-5 border-blue-100 bg-blue-50/50">
-                <label class="text-xs font-bold text-blue-600 uppercase mb-2 block">Search Loan ID to Pay</label>
+            <h2 class="text-xl font-black">Loan Records</h2>
+            <div class="card p-4 border-2 border-blue-100">
+                <p class="text-xs font-bold mb-2">💳 PAY LOAN (Enter Loan ID)</p>
                 <div class="flex gap-2">
-                    <input type="text" id="loan-search-id" placeholder="Ex: LN-1234" class="bg-white uppercase font-bold text-blue-900">
-                    <button onclick="searchLoan()" class="bg-blue-600 text-white px-4 rounded-lg"><i class="fas fa-search"></i></button>
+                    <input type="text" id="loan-search-input" placeholder="Ex: LN-4521" class="!p-2 text-sm uppercase">
+                    <button onclick="searchAndPayLoan()" class="bg-blue-600 text-white px-5 rounded-lg font-bold">Search</button>
                 </div>
             </div>
-            
-            <h3 class="text-sm font-bold text-gray-500 uppercase">Active Loans</h3>
-            <div id="loan-list" class="space-y-3 pb-20"></div>
+            <div id="loan-items-container" class="space-y-3"></div>
         </div>
 
         <div id="history-section" class="p-4 hidden-section">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-bold">Transactions</h2>
-                <div class="flex gap-1">
-                    <button onclick="filterHistory('all')" class="px-3 py-1 rounded-full text-[10px] font-bold bg-gray-200 hover:bg-gray-300">All</button>
-                    <button onclick="filterHistory('income')" class="px-3 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-600">Inc</button>
-                    <button onclick="filterHistory('expense')" class="px-3 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-600">Exp</button>
-                </div>
+            <h2 class="text-xl font-black mb-4">Transaction History</h2>
+            <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
+                <button onclick="loadHistory('all')" class="bg-gray-200 px-4 py-1 rounded-full text-xs font-bold">All</button>
+                <button onclick="loadHistory('income')" class="bg-green-100 text-green-600 px-4 py-1 rounded-full text-xs font-bold">Income</button>
+                <button onclick="loadHistory('expense')" class="bg-red-100 text-red-600 px-4 py-1 rounded-full text-xs font-bold">Expense</button>
             </div>
-            <div id="history-list" class="space-y-3"></div>
+            <div id="full-history-list" class="space-y-2"></div>
         </div>
 
         <div id="settings-section" class="p-4 hidden-section">
-            <h2 class="text-xl font-bold mb-6">Settings</h2>
+            <h2 class="text-xl font-black mb-4">Settings & Access</h2>
             <div class="card p-4 space-y-4">
-                <div class="flex items-center gap-3 border-b pb-4">
-                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-xl"><i class="fas fa-user"></i></div>
-                    <div>
-                        <p class="text-xs text-gray-400">Account Name</p>
-                        <p id="profile-name" class="font-bold text-lg"></p>
-                    </div>
+                <div class="border-b pb-4">
+                    <p class="text-xs font-bold text-gray-400 mb-2 uppercase">Your Information</p>
+                    <p id="settings-name" class="font-bold text-lg text-blue-600"></p>
                 </div>
-                <div class="pt-2">
-                    <button onclick="fullLogout()" class="w-full bg-red-50 text-red-500 py-3 rounded-xl font-bold text-sm border border-red-100"><i class="fas fa-sign-out-alt mr-2"></i>Full Logout (Clear Data)</button>
-                </div>
+                <button onclick="fullLogout()" class="w-full bg-red-50 text-red-600 p-4 rounded-xl font-bold border border-red-100">FULL LOGOUT (CLEAR DATA)</button>
             </div>
+            <p class="text-center text-[10px] text-gray-300 mt-20">APP VERSION 1.0.0 | DEVELOPED BY SALMAN</p>
         </div>
 
-        <nav class="fixed bottom-0 w-full bg-white border-t p-2 flex justify-around shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-50">
-            <button onclick="showSection('home-section')" id="nav-home" class="nav-btn active-nav"><i class="fas fa-home text-lg mb-1"></i><span>Home</span></button>
-            <button onclick="showSection('loan-section')" id="nav-loan" class="nav-btn"><i class="fas fa-hand-holding-dollar text-lg mb-1"></i><span>Loans</span></button>
-            <button onclick="showSection('history-section')" id="nav-history" class="nav-btn"><i class="fas fa-clock text-lg mb-1"></i><span>History</span></button>
-            <button onclick="showSection('settings-section')" id="nav-settings" class="nav-btn"><i class="fas fa-user-cog text-lg mb-1"></i><span>Profile</span></button>
+        <nav class="fixed bottom-0 w-full bg-white border-t p-4 flex justify-around shadow-[0_-5px_15px_rgba(0,0,0,0.05)] z-50">
+            <button onclick="showSection('home-section')" id="nav-home" class="nav-btn active-nav"><i class="fas fa-th-large text-xl mb-1"></i><span>Dashboard</span></button>
+            <button onclick="showSection('loan-section')" id="nav-loan" class="nav-btn"><i class="fas fa-hand-holding-usd text-xl mb-1"></i><span>Loans</span></button>
+            <button onclick="showSection('history-section')" id="nav-history" class="nav-btn"><i class="fas fa-history text-xl mb-1"></i><span>History</span></button>
+            <button onclick="showSection('settings-section')" id="nav-settings" class="nav-btn"><i class="fas fa-user-shield text-xl mb-1"></i><span>Access</span></button>
         </nav>
     </div>
 
-    <div id="data-modal" class="fixed inset-0 bg-black/50 z-[100] hidden-section flex items-end sm:items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl animate-fade">
-            <div class="flex justify-between items-center mb-6">
-                <h3 id="modal-title" class="text-lg font-black uppercase text-blue-600">Add Entry</h3>
-                <button onclick="closeModal()" class="text-gray-400 text-xl"><i class="fas fa-times"></i></button>
-            </div>
+    <div id="entry-modal" class="fixed inset-0 bg-black/60 hidden-section flex items-end sm:items-center justify-center z-[100] p-4">
+        <div class="bg-white w-full max-w-md p-6 rounded-t-3xl sm:rounded-3xl animate-slide-up">
+            <div class="w-12 h-1 bg-gray-200 mx-auto mb-6 rounded-full"></div>
+            <h3 id="modal-title" class="text-lg font-black mb-6 uppercase tracking-wider text-blue-600">New Entry</h3>
             
             <div class="space-y-4">
-                <input type="text" id="inp-name" placeholder="Name / Source (e.g. Salary)">
-                <input type="number" id="inp-amount" placeholder="Amount (৳)">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="date" id="inp-date">
-                    <select id="inp-cat">
-                        <option value="General">General</option>
-                        <option value="Food">Food</option>
-                        <option value="Transport">Transport</option>
-                        <option value="Salary">Salary</option>
-                        <option value="Bill">Bills</option>
-                        <option value="Shopping">Shopping</option>
-                        <option value="Other">Other...</option>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Source / Name</label>
+                    <input type="text" id="f-name" placeholder="E.g. Monthly Salary, Person Name">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Amount (৳)</label>
+                    <input type="number" id="f-amount" placeholder="0.00">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Date</label>
+                    <input type="date" id="f-date">
+                </div>
+                <div id="loan-options" class="hidden-section bg-gray-50 p-3 rounded-xl flex justify-around border border-dashed border-gray-300">
+                    <label class="flex items-center gap-2 text-sm font-bold"><input type="radio" name="ltype" value="given" checked> Given</label>
+                    <label class="flex items-center gap-2 text-sm font-bold"><input type="radio" name="ltype" value="taken"> Taken</label>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Reminder (Optional)</label>
+                    <select id="f-reminder">
+                        <option value="none">No Reminder</option>
+                        <option value="3">3 Days Before</option>
+                        <option value="5">5 Days Before</option>
+                        <option value="7">7 Days Before</option>
                     </select>
                 </div>
-
-                <div id="loan-options" class="hidden-section bg-orange-50 p-3 rounded-lg border border-orange-100">
-                    <p class="text-[10px] font-bold text-orange-400 uppercase mb-2">Loan Type</p>
-                    <div class="flex gap-4">
-                        <label class="flex items-center gap-2 font-bold text-sm"><input type="radio" name="ltype" value="given" checked> Given (দিয়েছি)</label>
-                        <label class="flex items-center gap-2 font-bold text-sm"><input type="radio" name="ltype" value="taken"> Taken (নিয়েছি)</label>
-                    </div>
-                </div>
-
-                <div id="reminder-option" class="hidden-section">
-                    <select id="inp-remind" class="text-red-500 font-bold bg-red-50 border-red-100">
-                        <option value="none">🔔 No Reminder</option>
-                        <option value="3">⏰ Alert 3 Days Before</option>
-                        <option value="7">⏰ Alert 7 Days Before</option>
-                    </select>
-                </div>
-
-                <textarea id="inp-note" rows="2" placeholder="Note (Optional)"></textarea>
-
-                <button onclick="saveData()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg">CONFIRM SAVE</button>
+                <textarea id="f-note" placeholder="Add a short note..." rows="2"></textarea>
+                
+                <button onclick="handleSave()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-100">SAVE DATA</button>
+                <button onclick="closeModal()" class="w-full text-gray-400 py-2 text-xs font-bold">CANCEL</button>
             </div>
         </div>
     </div>
 
-    <div id="pay-modal" class="fixed inset-0 bg-black/60 z-[110] hidden-section flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-xl p-0 overflow-hidden shadow-2xl">
-            <div class="bg-blue-600 p-4 text-white text-center">
-                <h3 class="font-bold text-lg">LOAN INVOICE</h3>
-                <p id="inv-id" class="text-xs opacity-80 uppercase tracking-widest"></p>
+    <div id="loan-pay-modal" class="fixed inset-0 bg-black/60 hidden-section flex items-center justify-center z-[200] p-4">
+        <div class="bg-white w-full max-w-md p-6 rounded-2xl shadow-2xl">
+            <div class="text-center border-b pb-4 mb-4">
+                <h2 class="text-xl font-black text-gray-800">LOAN INVOICE</h2>
+                <p id="inv-id" class="text-xs text-blue-600 font-bold"></p>
             </div>
-            <div class="p-6 space-y-3 text-sm">
-                <div class="flex justify-between"><span>Name:</span> <span id="inv-name" class="font-bold"></span></div>
-                <div class="flex justify-between"><span>Total Amount:</span> <span id="inv-total" class="font-bold"></span></div>
-                <div class="flex justify-between text-green-600"><span>Paid:</span> <span id="inv-paid" class="font-bold"></span></div>
-                <div class="border-t pt-2 flex justify-between text-lg font-black text-red-500"><span>Remaining:</span> <span id="inv-due"></span></div>
-                
-                <div class="pt-4">
-                    <input type="number" id="pay-amount" placeholder="Enter Payment Amount" class="mb-3 border-blue-200 focus:border-blue-500">
-                    <button onclick="processPayment()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold">PAY NOW</button>
-                    <button onclick="document.getElementById('pay-modal').classList.add('hidden-section')" class="w-full mt-2 text-xs text-gray-400">Cancel</button>
-                </div>
+            <div class="space-y-2 mb-6 text-sm">
+                <div class="flex justify-between"><span>Person:</span> <span id="inv-name" class="font-bold"></span></div>
+                <div class="flex justify-between"><span>Total Loan:</span> <span id="inv-total" class="font-bold"></span></div>
+                <div class="flex justify-between border-b pb-2"><span>Total Paid:</span> <span id="inv-paid" class="font-bold text-green-600"></span></div>
+                <div class="flex justify-between text-lg font-black pt-2"><span>Remaining:</span> <span id="inv-due" class="text-red-600"></span></div>
             </div>
+            
+            <input type="number" id="pay-amount-input" placeholder="Enter Payment Amount" class="mb-4">
+            <button onclick="confirmLoanPayment()" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold">SUBMIT PAYMENT</button>
+            <button onclick="closePayModal()" class="w-full mt-2 text-gray-400 text-xs">Close</button>
         </div>
     </div>
 
@@ -215,7 +184,7 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, getDocs, orderBy, where, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CONFIG
+        // 🔥 FIREBASE CONFIG (নিচের কোডটুকু রিপ্লেস করুন)
         const firebaseConfig = {
             apiKey: "AIzaSyDC6k-LlYquK8qv_qoG_HuBpgTSLd_Geo8",
             authDomain: "finance-manager-46f3b.firebaseapp.com",
@@ -229,194 +198,204 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let currentType = '';
+        let activeType = '';
         let targetLoanDoc = null;
-        let allDataCache = [];
 
-        // --- 1. AUTH LOGIC ---
-        window.handleAuth = async () => {
+        // --- AUTH LOGIC ---
+        window.handleGmailLogin = async () => {
             const email = document.getElementById('user-email').value;
             const pass = document.getElementById('user-password').value;
-            if(!email || !pass) return alert("Please fill all fields");
-            
-            document.getElementById('auth-btn').innerText = "Processing...";
-            try { await signInWithEmailAndPassword(auth, email, pass); } 
-            catch { try { await createUserWithEmailAndPassword(auth, email, pass); } catch(e){ alert(e.message); document.getElementById('auth-btn').innerText = "Login / Register"; } }
+            if(!email || !pass) return alert("Fill all fields");
+            document.getElementById('login-btn').innerText = "Processing...";
+            try { await signInWithEmailAndPassword(auth, email, pass); } catch {
+                try { await createUserWithEmailAndPassword(auth, email, pass); } catch(e) { alert(e.message); }
+            }
         };
 
-        window.saveProfile = async () => {
+        window.saveUserProfile = async () => {
+            const user = auth.currentUser;
             const name = document.getElementById('setup-username').value;
             const pin = document.getElementById('setup-pin').value;
-            if(name && pin.length === 4) {
-                await setDoc(doc(db, "users", auth.currentUser.uid), { username: name, pin: pin });
+            
+            // ✅ PIN VALIDATION REMOVED (Any length accepted)
+            if(name && pin) {
+                await setDoc(doc(db, "users", user.uid), { username: name, pin: pin });
                 location.reload();
-            } else { alert("Enter Name & 4-digit PIN"); }
+            } else { alert("Username and PIN are required!"); }
         };
 
         window.verifyPin = async () => {
-            const pin = document.getElementById('login-pin').value;
+            const entered = document.getElementById('login-pin').value;
             const user = auth.currentUser;
             const snap = await getDoc(doc(db, "users", user.uid));
-            if(snap.exists() && snap.data().pin === pin) {
+            if(snap.exists() && snap.data().pin === entered) {
                 document.getElementById('auth-section').classList.add('hidden-section');
                 document.getElementById('main-app').classList.remove('hidden-section');
-                fetchData();
-            } else { alert("Incorrect PIN!"); document.getElementById('login-pin').value = ''; }
+                initApp();
+            } else { alert("Incorrect PIN!"); }
         };
 
-        // --- 2. CORE DATA LOGIC ---
-        window.openModal = (type) => {
-            currentType = type;
+        // --- NAVIGATION & UI ---
+        window.showSection = (id) => {
+            document.querySelectorAll('#main-app > div').forEach(d => d.classList.add('hidden-section'));
+            document.getElementById(id).classList.remove('hidden-section');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
+            const activeNavId = id.replace('-section', '');
+            document.getElementById('nav-' + activeNavId).classList.add('active-nav');
+            if(id === 'home-section') initApp();
+            if(id === 'loan-section') loadLoans();
+            if(id === 'history-section') loadHistory('all');
+        };
+
+        window.openEntryModal = (type) => {
+            activeType = type;
             document.getElementById('modal-title').innerText = "Add " + type;
-            document.getElementById('inp-date').valueAsDate = new Date();
+            document.getElementById('f-date').valueAsDate = new Date();
             document.getElementById('loan-options').classList.toggle('hidden-section', type !== 'loan');
-            document.getElementById('reminder-option').classList.toggle('hidden-section', type !== 'expense');
-            document.getElementById('data-modal').classList.remove('hidden-section');
+            document.getElementById('entry-modal').classList.remove('hidden-section');
         };
 
-        window.closeModal = () => document.getElementById('data-modal').classList.add('hidden-section');
+        window.closeModal = () => document.getElementById('entry-modal').classList.add('hidden-section');
 
-        window.saveData = async () => {
-            const name = document.getElementById('inp-name').value;
-            const amt = parseFloat(document.getElementById('inp-amount').value);
-            const date = document.getElementById('inp-date').value;
-            
-            // Validation
-            if(!name || !amt || amt <= 0 || !date) return alert("Please fill correct data!");
+        // --- DATA OPERATIONS ---
+        window.handleSave = async () => {
+            const name = document.getElementById('f-name').value.trim();
+            const amountStr = document.getElementById('f-amount').value;
+            const date = document.getElementById('f-date').value;
+            const reminderDays = document.getElementById('f-reminder').value;
 
-            const data = {
-                name, amount: amt, date,
-                category: document.getElementById('inp-cat').value,
-                note: document.getElementById('inp-note').value,
-                type: currentType,
+            if(!name || !amountStr || parseFloat(amountStr) <= 0 || !date) {
+                return alert("Please fill all required fields correctly!");
+            }
+
+            const amount = parseFloat(amountStr);
+            const entry = {
+                name, amount, date,
+                type: activeType,
+                note: document.getElementById('f-note').value,
+                reminder: reminderDays,
                 createdAt: new Date()
             };
 
-            // Loan Specifics
-            if(currentType === 'loan') {
-                data.loanID = "LN-" + Math.floor(1000 + Math.random() * 9000);
-                data.loanSubtype = document.querySelector('input[name="ltype"]:checked').value;
-                data.paidAmount = 0;
+            if(activeType === 'loan') {
+                entry.loanID = "LN-" + Math.floor(1000 + Math.random() * 9000);
+                entry.loanSubtype = document.querySelector('input[name="ltype"]:checked').value;
+                entry.paidAmount = 0;
             }
 
-            // Reminder Logic
-            if(currentType === 'expense') {
-                data.reminder = document.getElementById('inp-remind').value;
-            }
-
-            try {
-                await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), data);
-                alert("Saved!");
-                closeModal();
-                fetchData();
-                // Clear Inputs
-                document.getElementById('inp-name').value = '';
-                document.getElementById('inp-amount').value = '';
-            } catch(e) { alert("Error: " + e.message); }
+            await addDoc(collection(db, `users/${auth.currentUser.uid}/records`), entry);
+            alert("Saved Successfully!");
+            
+            // Clear inputs
+            document.getElementById('f-name').value = '';
+            document.getElementById('f-amount').value = '';
+            document.getElementById('f-note').value = '';
+            
+            closeModal();
+            initApp();
         };
 
-        // --- 3. DISPLAY & CALCULATIONS ---
-        window.fetchData = async () => {
-            const q = query(collection(db, `users/${auth.currentUser.uid}/records`), orderBy("createdAt", "desc"));
+        window.initApp = async () => {
+            const user = auth.currentUser;
+            const q = query(collection(db, `users/${user.uid}/records`), orderBy("createdAt", "desc"));
             const snap = await getDocs(q);
-            allDataCache = [];
             
             let sums = { inc: 0, exp: 0, lg: 0, lt: 0 };
-            let loanHtml = '';
             let reminderHtml = '';
             const today = new Date();
 
-            snap.forEach(dDoc => {
-                const d = dDoc.data();
-                d.id = dDoc.id; // Store doc ID
-                allDataCache.push(d);
-
-                // Calculations
+            snap.forEach(docSnap => {
+                const d = docSnap.data();
                 if(d.type === 'income') sums.inc += d.amount;
                 if(d.type === 'expense') sums.exp += d.amount;
                 if(d.type === 'loan') {
                     const balance = d.amount - d.paidAmount;
                     if(d.loanSubtype === 'given') sums.lg += balance;
                     else sums.lt += balance;
-
-                    // Build Loan List
-                    if(balance > 0) {
-                        loanHtml += `
-                        <div class="card p-3 flex justify-between items-center border-l-4 ${d.loanSubtype === 'given' ? 'border-orange-500' : 'border-blue-500'}">
-                            <div>
-                                <p class="font-bold text-sm">${d.name} <span class="bg-gray-100 text-gray-500 px-1 rounded text-[10px]">${d.loanID}</span></p>
-                                <p class="text-[10px] text-gray-400">${d.loanSubtype.toUpperCase()} | Total: ৳${d.amount}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-red-500 font-bold text-sm">Due: ৳${balance}</p>
-                            </div>
-                        </div>`;
-                    }
                 }
 
-                // Reminder Check
-                if(d.reminder && d.reminder !== 'none') {
-                    const due = new Date(d.date);
-                    const diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
-                    if(diff >= 0 && diff <= parseInt(d.reminder)) {
-                        reminderHtml += `<div class="bg-red-50 border border-red-200 p-2 rounded-lg flex justify-between text-xs text-red-600 font-bold mb-1">
-                            <span><i class="fas fa-bell animate-bounce"></i> ${d.name} Bill</span>
-                            <span>Due in ${diff} days (৳${d.amount})</span>
+                // Reminder Logic
+                if(d.reminder !== 'none') {
+                    const dueDate = new Date(d.date);
+                    const diff = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                    if(diff <= parseInt(d.reminder) && diff >= 0) {
+                        reminderHtml += `<div class="card p-3 warning-red text-xs flex justify-between">
+                            <span>⚠️ ${d.name} Due in ${diff} Days</span>
+                            <span>৳${d.amount}</span>
                         </div>`;
                     }
                 }
             });
 
-            // Update Dashboard
-            document.getElementById('total-inc').innerText = '৳' + sums.inc;
-            document.getElementById('total-exp').innerText = '৳' + sums.exp;
-            document.getElementById('total-lg').innerText = '৳' + sums.lg;
-            document.getElementById('total-lt').innerText = '৳' + sums.lt;
-            document.getElementById('total-net').innerText = '৳' + (sums.inc - sums.exp + sums.lt - sums.lg); // Net = Income - Exp + LoanTaken - LoanGiven
-
-            // Update Lists
-            document.getElementById('loan-list').innerHTML = loanHtml || '<p class="text-center text-xs text-gray-400">No active loans.</p>';
+            document.getElementById('sum-inc').innerText = '৳' + sums.inc;
+            document.getElementById('sum-exp').innerText = '৳' + sums.exp;
+            document.getElementById('sum-lg').innerText = '৳' + sums.lg;
+            document.getElementById('sum-lt').innerText = '৳' + sums.lt;
+            document.getElementById('sum-net').innerText = '৳' + (sums.inc - sums.exp + sums.lg - sums.lt);
+            
             if(reminderHtml) {
-                document.getElementById('reminder-box').classList.remove('hidden-section');
+                document.getElementById('reminder-section').classList.remove('hidden-section');
                 document.getElementById('reminder-list').innerHTML = reminderHtml;
+            } else {
+                document.getElementById('reminder-section').classList.add('hidden-section');
             }
-            renderHistory(allDataCache);
         };
 
-        // --- 4. HISTORY & FILTER ---
-        window.renderHistory = (data) => {
+        window.loadLoans = async () => {
+            const q = query(collection(db, `users/${auth.currentUser.uid}/records`), where("type", "==", "loan"));
+            const snap = await getDocs(q);
             let html = '';
-            data.forEach(d => {
-                let color = d.type === 'income' ? 'text-green-600' : (d.type === 'expense' ? 'text-red-600' : 'text-orange-600');
-                let icon = d.type === 'income' ? 'fa-arrow-down' : (d.type === 'expense' ? 'fa-arrow-up' : 'fa-handshake');
-                
-                html += `
-                <div class="card p-3 flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center ${color}"><i class="fas ${icon}"></i></div>
-                        <div>
-                            <p class="font-bold text-sm text-slate-700">${d.name}</p>
-                            <p class="text-[10px] text-gray-400">${d.date} • ${d.category || 'General'}</p>
-                        </div>
+            snap.forEach(dDoc => {
+                const d = dDoc.data();
+                const due = d.amount - d.paidAmount;
+                html += `<div class="card p-4 border-l-4 ${d.loanSubtype === 'given' ? 'border-orange-500' : 'border-blue-500'}">
+                    <div class="flex justify-between font-black uppercase text-xs mb-1">
+                        <span>${d.name} <span class="text-blue-600 ml-2">#${d.loanID}</span></span>
+                        <span class="${due > 0 ? 'text-red-500' : 'text-green-500'}">৳${due} Due</span>
                     </div>
-                    <p class="font-bold ${color}">৳${d.amount}</p>
+                    <p class="text-[10px] text-gray-400">Total: ৳${d.amount} | Type: ${d.loanSubtype.toUpperCase()}</p>
                 </div>`;
             });
-            document.getElementById('history-list').innerHTML = html;
+            document.getElementById('loan-items-container').innerHTML = html || '<p class="text-center text-gray-400 text-xs">No loans found.</p>';
+        };
+        
+        // --- HISTORY FUNCTION ---
+        window.loadHistory = async (filter) => {
+            const user = auth.currentUser;
+            let q;
+            if (filter === 'all') {
+                q = query(collection(db, `users/${user.uid}/records`), orderBy("createdAt", "desc"));
+            } else {
+                q = query(collection(db, `users/${user.uid}/records`), where("type", "==", filter), orderBy("createdAt", "desc"));
+            }
+            
+            const snap = await getDocs(q);
+            let html = '';
+            snap.forEach(doc => {
+                const d = doc.data();
+                let colorClass = 'text-gray-600';
+                if(d.type === 'income') colorClass = 'text-green-600';
+                if(d.type === 'expense') colorClass = 'text-red-600';
+                if(d.type === 'loan') colorClass = 'text-orange-600';
+
+                html += `<div class="card p-3 flex justify-between items-center text-sm border-l-4 border-gray-100">
+                    <div>
+                        <p class="font-bold uppercase text-xs">${d.type}</p>
+                        <p class="font-bold text-gray-800">${d.name}</p>
+                        <p class="text-[10px] text-gray-400">${d.date}</p>
+                    </div>
+                    <p class="font-black ${colorClass}">৳${d.amount}</p>
+                </div>`;
+            });
+            document.getElementById('full-history-list').innerHTML = html || '<p class="text-center text-gray-400 text-xs">No records found.</p>';
         };
 
-        window.filterHistory = (type) => {
-            if(type === 'all') renderHistory(allDataCache);
-            else renderHistory(allDataCache.filter(d => d.type === type));
-        };
-
-        // --- 5. LOAN PAYMENT ---
-        window.searchLoan = async () => {
-            const id = document.getElementById('loan-search-id').value.trim();
+        window.searchAndPayLoan = async () => {
+            const id = document.getElementById('loan-search-input').value.trim().toUpperCase();
             const q = query(collection(db, `users/${auth.currentUser.uid}/records`), where("loanID", "==", id));
             const snap = await getDocs(q);
-
-            if(snap.empty) return alert("Loan ID Not Found!");
+            
+            if(snap.empty) return alert("Loan ID not found!");
             
             targetLoanDoc = snap.docs[0];
             const d = targetLoanDoc.data();
@@ -426,54 +405,44 @@
             document.getElementById('inv-total').innerText = '৳' + d.amount;
             document.getElementById('inv-paid').innerText = '৳' + d.paidAmount;
             document.getElementById('inv-due').innerText = '৳' + (d.amount - d.paidAmount);
-            document.getElementById('pay-modal').classList.remove('hidden-section');
+            document.getElementById('loan-pay-modal').classList.remove('hidden-section');
         };
 
-        window.processPayment = async () => {
-            const amt = parseFloat(document.getElementById('pay-amount').value);
-            if(!amt || amt <= 0) return alert("Invalid Amount");
-
-            const currentPaid = targetLoanDoc.data().paidAmount || 0;
-            const total = targetLoanDoc.data().amount;
+        window.confirmLoanPayment = async () => {
+            const amt = parseFloat(document.getElementById('pay-amount-input').value);
+            if(!amt || amt <= 0) return alert("Invalid amount");
             
-            if(currentPaid + amt > total) return alert("Amount exceeds remaining due!");
-
-            await updateDoc(targetLoanDoc.ref, { paidAmount: increment(amt) });
+            await updateDoc(targetLoanDoc.ref, {
+                paidAmount: increment(amt)
+            });
             
-            // Add Record of Payment as Expense/Income log (Optional - kept simple for now)
             alert("Payment Successful!");
-            document.getElementById('pay-modal').classList.add('hidden-section');
-            document.getElementById('pay-amount').value = '';
-            fetchData();
+            closePayModal();
+            loadLoans();
         };
 
-        // --- 6. NAV & UTIL ---
-        window.showSection = (id) => {
-            document.querySelectorAll('#main-app > div').forEach(d => d.classList.add('hidden-section'));
-            document.getElementById(id).classList.remove('hidden-section');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-            
-            const map = {'home-section':'nav-home', 'loan-section':'nav-loan', 'history-section':'nav-history', 'settings-section':'nav-settings'};
-            if(map[id]) document.getElementById(map[id]).classList.add('active-nav');
+        window.closePayModal = () => {
+            document.getElementById('loan-pay-modal').classList.add('hidden-section');
+            document.getElementById('pay-amount-input').value = '';
         };
 
-        window.fullLogout = () => { signOut(auth); localStorage.clear(); location.reload(); };
-
-        // INITIAL CHECK
+        // --- OBSERVER & INITIALIZER ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const snap = await getDoc(doc(db, "users", user.uid));
                 if (snap.exists()) {
-                    document.getElementById('profile-name').innerText = snap.data().username;
-                    document.getElementById('welcome-msg').innerText = "Hello, " + snap.data().username;
                     document.getElementById('email-login-step').classList.add('hidden-section');
                     document.getElementById('pin-step').classList.remove('hidden-section');
+                    document.getElementById('welcome-back').innerText = "Hi, " + snap.data().username;
+                    document.getElementById('settings-name').innerText = snap.data().username;
                 } else {
                     document.getElementById('email-login-step').classList.add('hidden-section');
                     document.getElementById('setup-step').classList.remove('hidden-section');
                 }
             }
         });
+
+        window.fullLogout = () => { signOut(auth); localStorage.clear(); location.reload(); };
     </script>
 </body>
 </html>
