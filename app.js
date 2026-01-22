@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, addDoc, collection, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// আপনার কনফিগ
 const firebaseConfig = {
   apiKey: "AIzaSyDOJs4b_RHaMoa3jThKClD9iX_D2MXcRJ0",
   authDomain: "my-finance-app-10a12.firebaseapp.com",
@@ -17,28 +18,30 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-import { signInWithRedirect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+// ১. লগইন বাটন ক্লিক চেক
+const loginBtn = document.getElementById("googleLogin");
+if (loginBtn) {
+    loginBtn.onclick = async () => {
+        console.log("Login button clicked...");
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (err) {
+            console.error("Login error:", err);
+            alert("Login failed! Check console for details.");
+        }
+    };
+}
 
-// app.js এর লগইন অংশটুকু এভাবে আপডেট করুন
-import { signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-// লগইন বাটন ক্লিক করলে সরাসরি গুগল পেজে নিয়ে যাবে
-document.getElementById("googleLogin").onclick = () => {
-    signInWithRedirect(auth, provider);
-};
-
-// পেজ লোড হওয়ার সময় আগের লগইন চেষ্টার রেজাল্ট চেক করা
-getRedirectResult(auth).catch((error) => {
-    console.error("Redirect Error:", error.code, error.message);
-});
-
-// ইউজার চেক
+// ২. অটো-লগইন চেক
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        const snap = await getDoc(doc(db, "users", user.uid));
+        console.log("User detected:", user.email);
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        
         if (!snap.exists()) {
-            const p = prompt("Set a 4-digit PIN:");
-            await setDoc(doc(db, "users", user.uid), { pin: p });
+            const p = prompt("Set a 4-digit PIN for security:");
+            if(p) await setDoc(userRef, { pin: p, setup: true });
         }
         showPage("unlock-page");
     } else {
@@ -46,7 +49,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// আনলক লজিক
+// ৩. আনলক ফাংশন
 document.getElementById("unlockBtn").onclick = async () => {
     const pin = document.getElementById("pinInput").value;
     const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
@@ -56,17 +59,21 @@ document.getElementById("unlockBtn").onclick = async () => {
     } else { alert("Wrong PIN!"); }
 };
 
-// ডেটা সেভ
+// --- হেল্পার ফাংশনস ---
+function showPage(id) {
+    document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+    const target = document.getElementById(id);
+    if(target) target.style.display = "block";
+}
+
+// ডাটা লোড ও সেভ আগের মতোই থাকবে...
 window.saveData = async (type) => {
     const amt = document.getElementById("amt").value;
     const note = document.getElementById("note").value;
     if(!amt || !note) return alert("Fill all fields");
-
     await addDoc(collection(db, "users", auth.currentUser.uid, "transactions"), {
         amt: Number(amt), note: note, type: type, date: serverTimestamp()
     });
-    document.getElementById("amt").value = "";
-    document.getElementById("note").value = "";
     loadData();
 };
 
@@ -76,21 +83,14 @@ async function loadData() {
     let inc = 0, exp = 0;
     const list = document.getElementById("historyList");
     list.innerHTML = "";
-
     snap.forEach(d => {
         const data = d.data();
         if(data.type === "income") inc += data.amt; else exp += data.amt;
         list.innerHTML += `<li>${data.note}: ৳${data.amt} (${data.type})</li>`;
     });
-
     document.getElementById("incTotal").innerText = inc;
     document.getElementById("expTotal").innerText = exp;
     document.getElementById("balanceText").innerText = inc - exp;
-}
-
-function showPage(id) {
-    document.querySelectorAll(".page").forEach(p => p.style.display = "none");
-    document.getElementById(id).style.display = "block";
 }
 
 document.getElementById("logoutBtn").onclick = () => signOut(auth).then(() => location.reload());
